@@ -4,7 +4,7 @@ Generate resources/icons/app.png — weather dashboard icon, 512×512, RGBA.
 Requires: pillow  (pip3 install pillow)
 """
 import math
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 
 SIZE   = 512
 CORNER = 96   # rounded-rect corner radius
@@ -40,37 +40,24 @@ for deg in range(0, 360, 45):
 # Sun disc on top of rays
 draw.ellipse([(SX-SR, SY-SR), (SX+SR, SY+SR)], fill=SUN)
 
-# ── Cloud (layered soft ellipses then sharp-edge fill) ────────────────────────
-# Build cloud on its own RGBA layer so we can apply a slight blur for softness
-cloud_layer = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
-cd = ImageDraw.Draw(cloud_layer)
+# ── Cloud — pure circles only, no rectangles ─────────────────────────────────
+cloud = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+cc = ImageDraw.Draw(cloud)
 
-def cloud_puff(cx, cy, rx, ry):
-    cd.ellipse([(cx-rx, cy-ry), (cx+rx, cy+ry)], fill=WHITE)
+def puff(cx, cy, r):
+    cc.ellipse([(cx-r, cy-r), (cx+r, cy+r)], fill=WHITE)
 
-cloud_puff(188, 262, 82, 66)   # left puff
-cloud_puff(232, 242, 68, 58)   # top-left puff
-cloud_puff(272, 286, 74, 58)   # right puff
-cloud_puff(150, 294, 58, 50)   # far-left puff
-# Flat bottom — rectangle to fill the underside flush
-cd.rectangle([(100, 300), (344, 348)], fill=WHITE)
+# Row of circles along the bottom edge (forms the flat-ish base)
+puff(148, 310, 52)   # far left base
+puff(200, 318, 56)   # left-centre base
+puff(256, 318, 56)   # centre base
+puff(312, 310, 52)   # right base
+# Upper puffs that give the cloud its bumpy top
+puff(176, 270, 58)   # left upper
+puff(232, 248, 64)   # centre top (tallest)
+puff(288, 268, 56)   # right upper
 
-# Very slight blur to blend puffs into each other naturally
-cloud_layer = cloud_layer.filter(ImageFilter.GaussianBlur(radius=4))
-# Re-sharpen alpha: anything > threshold becomes opaque white
-r, g, b, a = cloud_layer.split()
-import PIL.ImageOps
-# Set rgb channels back to white where alpha > 0
-cloud_clean = Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
-cc = ImageDraw.Draw(cloud_clean)
-cloud_puff2 = lambda cx, cy, rx, ry: cc.ellipse([(cx-rx, cy-ry), (cx+rx, cy+ry)], fill=WHITE)
-cloud_puff2(188, 262, 82, 66)
-cloud_puff2(232, 242, 68, 58)
-cloud_puff2(272, 286, 74, 58)
-cloud_puff2(150, 294, 58, 50)
-cc.rectangle([(100, 300), (344, 348)], fill=WHITE)
-
-img = Image.alpha_composite(img, cloud_clean)
+img = Image.alpha_composite(img, cloud)
 draw = ImageDraw.Draw(img)   # refresh draw handle
 
 # ── Raindrops ─────────────────────────────────────────────────────────────────
