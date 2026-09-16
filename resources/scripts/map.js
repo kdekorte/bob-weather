@@ -26,15 +26,6 @@ let _radarFrameIdx   = 0;
 let _radarAnimTimer  = null;
 let _radarRefreshTimer = null;
 
-// ---- Zoom calculation ---------------------------------------------------
-
-function calcZoomForRadius(lat, radiusMiles, panelWidthPx) {
-  const lonDegPerMile = 1 / (Math.cos(lat * Math.PI / 180) * 69.172);
-  const diameterDeg   = 2 * radiusMiles * lonDegPerMile;
-  const zoom = Math.log2((360 * panelWidthPx) / (256 * diameterDeg));
-  return Math.max(4, Math.min(12, Math.floor(zoom)));
-}
-
 // ---- RainViewer ---------------------------------------------------------
 
 async function fetchRadarFrames() {

@@ -102,9 +102,7 @@ All three panels are full-height. No scrolling. All content must fit within the 
 - Rendered using **[Leaflet.js](https://leafletjs.com/)** (latest stable) inside a Neutralino WebView
 - Base tile layer: [OpenStreetMap](https://www.openstreetmap.org/) (`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`)
 - Initial view centred on the device's current coordinates
-- Zoom level chosen so that a **100-mile radius** is fully visible within the panel width (~340 px)
-  - Approximate zoom level 8 for most latitudes; compute dynamically using `Math.log2(360 * panelWidthPx / (256 * milesPerDeg(lat) * 200))` or equivalent
-- A subtle circle overlay (dashed stroke, no fill) drawn at a 100-mile radius from the centre point using `L.circle`
+- Zoom level defaults to 7; adjustable via map controls
 - Map tiles are loaded from OSM; no API key required
 
 ### Precipitation Radar Overlay
