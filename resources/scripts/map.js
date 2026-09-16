@@ -233,6 +233,27 @@ function initMap() {
 
   L.control.zoom({ position: 'topright' }).addTo(_map);
 
+  // Home button — recentres to default view
+  const HomeControl = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd() {
+      const btn = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-home-btn');
+      btn.title = 'Reset to home view';
+      btn.innerHTML = `<a role="button" aria-label="Reset to home view" href="#">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+          <path d="M8 1.5L1 7.5h2V14h4v-4h2v4h4V7.5h2L8 1.5z"/>
+        </svg>
+      </a>`;
+      L.DomEvent.on(btn, 'click', (e) => {
+        L.DomEvent.stopPropagation(e);
+        L.DomEvent.preventDefault(e);
+        _map.setView(_homeLatLng, zoom, { animate: true });
+      });
+      return btn;
+    }
+  });
+  new HomeControl().addTo(_map);
+
   // Base tile layer — OSM
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom:     19,

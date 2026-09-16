@@ -388,6 +388,25 @@ html, body {
   z-index: 1000;
 }
 
+/* Home button — sits below the zoom control with a small gap */
+.leaflet-home-btn {
+  margin-top: 6px !important;
+  cursor: pointer;
+}
+
+.leaflet-home-btn a {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 26px !important;
+  height: 26px !important;
+  color: #444 !important;
+}
+
+.leaflet-home-btn a:hover {
+  color: #3b82d4 !important;
+}
+
 /* Compact Leaflet attribution */
 .leaflet-control-attribution {
   font-size: 8px !important;
