@@ -117,6 +117,9 @@ async function fetchWeather() {
       'wind_direction_10m',
       'relative_humidity_2m',
     ].join(','),
+    hourly: [
+      'precipitation_probability',
+    ].join(','),
     daily: [
       'weather_code',
       'temperature_2m_max',
@@ -124,6 +127,7 @@ async function fetchWeather() {
       'precipitation_probability_max',
       'sunrise',
       'sunset',
+      'uv_index_max',
     ].join(','),
     timezone: 'auto',
     forecast_days: 6,
@@ -187,6 +191,31 @@ function renderCurrent(data, locationName) {
   document.getElementById('weather-humidity').textContent =
     `${c.relative_humidity_2m}% humidity`;
 
+  // UV index — today's max, colour-coded by level
+  const uv = daily.uv_index_max?.[0];
+  const uvEl = document.getElementById('weather-uv');
+  if (uv != null) {
+    const uvColor = uv <= 2 ? '#2c8a3a'
+                  : uv <= 5 ? '#d4790a'
+                  : uv <= 7 ? '#c0392b'
+                  : uv <= 10 ? '#7c3aed'
+                  : '#7c3aed';
+    uvEl.innerHTML =
+      `<svg viewBox="0 0 13 13" width="12" height="12" style="display:inline-block;vertical-align:middle;margin-right:2px;" fill="${uvColor}">
+        <circle cx="6.5" cy="6.5" r="3"/>
+        <line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="${uvColor}" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="${uvColor}" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="${uvColor}" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="${uvColor}" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="${uvColor}" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="9.6" y1="9.6" x2="10.6" y2="10.6" stroke="${uvColor}" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="10.6" y1="2.4" x2="9.6" y2="3.4" stroke="${uvColor}" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="3.4" y1="9.6" x2="2.4" y2="10.6" stroke="${uvColor}" stroke-width="1.3" stroke-linecap="round"/>
+      </svg><span style="color:${uvColor};font-weight:600;">UV ${Math.round(uv)}</span>`;
+  } else {
+    uvEl.innerHTML = '';
+  }
+
   // Sunrise / sunset — bold arrow + sun icon
   const sunriseIcon = `<svg viewBox="0 0 22 14" width="22" height="14" style="display:inline-block;vertical-align:middle;margin-right:3px;">
     <!-- up arrow on the left -->
@@ -225,6 +254,58 @@ function renderCurrent(data, locationName) {
 
   document.getElementById('weather-updated').textContent = '';
   document.getElementById('panel-current').classList.remove('stale');
+
+  // Hourly precipitation probability — next 12 hours from now
+  renderPrecipBar(data);
+}
+
+function renderPrecipBar(data) {
+  const container = document.getElementById('precip-bar');
+  if (!container || !data.hourly) return;
+
+  const times = data.hourly.time;
+  const probs  = data.hourly.precipitation_probability;
+  if (!times || !probs) return;
+
+  // Find the index of the current hour
+  const nowIso = new Date().toISOString().slice(0, 13); // "YYYY-MM-DDTHH"
+  let startIdx = times.findIndex(t => t.slice(0, 13) >= nowIso);
+  if (startIdx < 0) startIdx = 0;
+
+  const hours = 12;
+  const BAR_W = 12;
+  const GAP   = 2;
+  const H     = 32;
+  const svgW  = hours * (BAR_W + GAP) - GAP;
+
+  let bars = '';
+  let labels = '';
+  for (let i = 0; i < hours; i++) {
+    const idx  = startIdx + i;
+    const prob = probs[idx] ?? 0;
+    const barH = Math.max(2, Math.round((prob / 100) * H));
+    const x    = i * (BAR_W + GAP);
+    const y    = H - barH;
+
+    // Colour: blue tint scales with probability
+    const opacity = 0.25 + (prob / 100) * 0.75;
+    bars += `<rect x="${x}" y="${y}" width="${BAR_W}" height="${barH}"
+      rx="2" fill="#3b82d4" fill-opacity="${opacity.toFixed(2)}"/>`;
+
+    // Hour label every 3 hours
+    if (i % 3 === 0 && times[idx]) {
+      const hr = new Date(times[idx]).getHours();
+      const label = AppConfig.timeFormat === '12h'
+        ? `${hr % 12 || 12}${hr >= 12 ? 'p' : 'a'}`
+        : String(hr).padStart(2, '0');
+      labels += `<text x="${x + BAR_W / 2}" y="${H + 10}" text-anchor="middle"
+        font-size="8" fill="#9ca3b0">${label}</text>`;
+    }
+  }
+
+  container.innerHTML =
+    `<svg viewBox="0 0 ${svgW} ${H + 12}" width="${svgW}" height="${H + 12}"
+        style="display:block;overflow:visible;">${bars}${labels}</svg>`;
 }
 
 function renderForecast(data) {

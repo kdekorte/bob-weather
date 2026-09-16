@@ -247,9 +247,30 @@ html, body {
   font-weight: 600;
 }
 
+#weather-humidity-uv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+}
+
 #weather-humidity {
   font-weight: 400;
   color: #4a5470;
+}
+
+#weather-uv {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+#precip-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 2px;
 }
 
 #weather-sun {
