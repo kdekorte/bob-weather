@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background: deep blue rounded square -->
+  <rect width="512" height="512" rx="96" ry="96" fill="#1a2a4a"/>
+
+  <!-- Sun (top-right) -->
+  <circle cx="340" cy="148" r="54" fill="#f5c842"/>
+  <!-- Sun rays -->
+  <g stroke="#f5c842" stroke-width="10" stroke-linecap="round">
+    <line x1="340" y1="72"  x2="340" y2="56"/>
+    <line x1="340" y1="224" x2="340" y2="240"/>
+    <line x1="264" y1="148" x2="248" y2="148"/>
+    <line x1="416" y1="148" x2="432" y2="148"/>
+    <line x1="286" y1="94"  x2="275" y2="83"/>
+    <line x1="394" y1="202" x2="405" y2="213"/>
+    <line x1="394" y1="94"  x2="405" y2="83"/>
+    <line x1="286" y1="202" x2="275" y2="213"/>
+  </g>
+
+  <!-- Main cloud (white, overlaps sun slightly) -->
+  <g fill="#ffffff">
+    <!-- cloud body -->
+    <ellipse cx="200" cy="272" rx="76" ry="56"/>
+    <ellipse cx="272" cy="296" rx="68" ry="48"/>
+    <ellipse cx="152" cy="300" rx="52" ry="44"/>
+    <ellipse cx="236" cy="248" rx="60" ry="50"/>
+    <rect x="100" y="296" width="240" height="52" rx="0"/>
+  </g>
+
+  <!-- Rain drops below cloud -->
+  <g fill="#6ab4f5" opacity="0.95">
+    <!-- drop 1 -->
+    <ellipse cx="148" cy="390" rx="9" ry="13"/>
+    <!-- drop 2 -->
+    <ellipse cx="196" cy="410" rx="9" ry="13"/>
+    <!-- drop 3 -->
+    <ellipse cx="244" cy="390" rx="9" ry="13"/>
+    <!-- drop 4 -->
+    <ellipse cx="292" cy="410" rx="9" ry="13"/>
+    <!-- drop 5 -->
+    <ellipse cx="340" cy="390" rx="9" ry="13"/>
+  </g>
+
+  <!-- Subtle map grid lines (bottom strip, behind cloud) -->
+  <!-- intentionally omitted to keep icon clean at small sizes -->
+</svg>
