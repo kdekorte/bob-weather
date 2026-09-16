@@ -188,8 +188,12 @@ function renderCurrent(data, locationName) {
         style="transform:rotate(${arrowDeg}deg);display:inline-block;vertical-align:middle;margin-right:3px;">
       <polygon points="8,1 11,13 8,10 5,13" fill="currentColor"/>
     </svg>${windDir(deg)} ${fmtSpeed(c.wind_speed_10m)}`;
-  document.getElementById('weather-humidity').textContent =
-    `${c.relative_humidity_2m}% humidity`;
+  const rh = c.relative_humidity_2m;
+  const rhColor = rh < 30 ? '#d4790a'   // dry — orange
+                : rh <= 60 ? '#2c8a3a'  // comfortable — green
+                : '#3b82d4';            // humid — blue
+  document.getElementById('weather-humidity').innerHTML =
+    `<span style="color:${rhColor};font-weight:600;">${rh}%</span> humidity`;
 
   // UV index — today's max, colour-coded by level
   const uv = daily.uv_index_max?.[0];
