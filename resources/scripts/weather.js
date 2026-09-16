@@ -275,7 +275,8 @@ function renderPrecipBar(data) {
   const hours = 12;
   const BAR_W = 12;
   const GAP   = 2;
-  const H     = 32;
+  const H     = 30;   // bar area height
+  const LABEL_H = 14; // space below bars for labels
   const svgW  = hours * (BAR_W + GAP) - GAP;
 
   let bars = '';
@@ -298,14 +299,14 @@ function renderPrecipBar(data) {
       const label = AppConfig.timeFormat === '12h'
         ? `${hr % 12 || 12}${hr >= 12 ? 'p' : 'a'}`
         : String(hr).padStart(2, '0');
-      labels += `<text x="${x + BAR_W / 2}" y="${H + 10}" text-anchor="middle"
+      labels += `<text x="${x + BAR_W / 2}" y="${H + LABEL_H - 2}" text-anchor="middle"
         font-size="8" fill="#9ca3b0">${label}</text>`;
     }
   }
 
   container.innerHTML =
-    `<svg viewBox="0 0 ${svgW} ${H + 12}" width="${svgW}" height="${H + 12}"
-        style="display:block;overflow:visible;">${bars}${labels}</svg>`;
+    `<svg viewBox="0 0 ${svgW} ${H + LABEL_H}" width="${svgW}" height="${H + LABEL_H}"
+        overflow="visible" style="display:block;">${bars}${labels}</svg>`;
 }
 
 function renderForecast(data) {
