@@ -33,7 +33,11 @@ AppConfig.locationSource = 'fallback';
 async function initConfig() {
   try {
     if (typeof Neutralino !== 'undefined') {
-      const raw = await Neutralino.filesystem.readFile('./neutralino.config.json');
+      // NL_PATH is the directory containing the binary + resources.neu (works
+      // for both `neu run` from the project root and a built binary launched
+      // from any working directory).
+      const configPath = (typeof NL_PATH !== 'undefined' ? NL_PATH : '.') + '/neutralino.config.json';
+      const raw = await Neutralino.filesystem.readFile(configPath);
       const json = JSON.parse(raw);
       const wc = json.weatherConfig || {};
       Object.assign(AppConfig, DEFAULT_CONFIG, wc);
