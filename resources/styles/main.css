@@ -401,15 +401,12 @@ html, body {
 }
 
 .leaflet-home-btn a {
-  width: 26px !important;
-  height: 26px !important;
-  line-height: 26px !important;
-  text-align: center !important;
   color: #444 !important;
 }
 
 .leaflet-home-btn a:hover {
   color: #3b82d4 !important;
+  background-color: #f4f4f4 !important;
 }
 
 /* Compact Leaflet attribution */

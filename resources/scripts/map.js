@@ -241,8 +241,8 @@ function initMap() {
     onAdd() {
       const btn = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-home-btn');
       btn.title = 'Reset to home location';
-      btn.innerHTML = `<a role="button" aria-label="Reset to home location" href="#">
-        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" style="vertical-align:middle;position:relative;top:-1px;">
+      btn.innerHTML = `<a role="button" aria-label="Reset to home location" href="#" style="display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
           <path d="M8 1.5L1 7.5h2V14h4v-4h2v4h4V7.5h2L8 1.5z"/>
         </svg>
       </a>`;
