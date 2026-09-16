@@ -254,7 +254,8 @@ html, body {
 
 #weather-sun {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 16px;
   font-size: 11px;
   color: #4a5470;
 }
