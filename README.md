@@ -130,6 +130,71 @@ bob-weather-win_x64.exe        # Windows
 
 ---
 
+## Packaging as a macOS Application
+
+Use the included [`package-mac.sh`](package-mac.sh) script to produce a proper macOS `.app` bundle for Apple Silicon.
+
+### Prerequisites
+
+- macOS with `sips` and `iconutil` (included with Xcode Command Line Tools)
+- Neutralino CLI installed (`npm i -g @neutralinojs/neu`)
+- Binaries downloaded (`neu update`)
+
+### Run the script
+
+```bash
+chmod +x package-mac.sh   # first time only
+./package-mac.sh
+```
+
+### What the script does
+
+1. Runs `neu build` to compile the app and bundle resources
+2. Creates a standard `.app` directory structure under `dist/bob-weather.app/`
+3. Copies the `mac_arm64` binary into `Contents/MacOS/`
+4. Copies `resources.neu` alongside the binary
+5. Generates a `.icns` icon from `resources/icons/app.png` using `sips` and `iconutil`
+6. Writes a complete `Info.plist` with bundle ID, version, display name, and location usage description
+
+### Output
+
+```
+dist/bob-weather.app/
+├── Contents/
+│   ├── Info.plist
+│   ├── MacOS/
+│   │   ├── bob-weather          ← executable
+│   │   └── resources.neu
+│   └── Resources/
+│       └── bob-weather.icns
+```
+
+### Installing and running
+
+```bash
+# Run directly from the project
+open dist/bob-weather.app
+
+# Install to Applications
+cp -R dist/bob-weather.app /Applications/
+```
+
+### Security warning on first launch
+
+macOS Gatekeeper will block an unsigned app. To allow it:
+
+1. Try to open the app — macOS will block it
+2. Open **System Settings → Privacy & Security**
+3. Scroll to the bottom and click **Open Anyway**
+
+Alternatively, from the terminal:
+
+```bash
+xattr -dr com.apple.quarantine dist/bob-weather.app
+```
+
+---
+
 ## Configuration reference
 
 All runtime configuration lives in `neutralino.config.json` under the `weatherConfig` key:

@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# package-mac.sh — Build bob-weather as a macOS .app bundle (arm64)
+#
+# Usage:
+#   chmod +x package-mac.sh
+#   ./package-mac.sh
+#
+# Output: dist/bob-weather.app  (drag to /Applications to install)
+
+set -euo pipefail
+
+APP_NAME="bob-weather"
+BUNDLE_ID="com.ibm.bob-weather"
+VERSION="1.0.0"
+BINARY_NAME="${APP_NAME}-mac_arm64"
+BUILD_DIR="dist/${APP_NAME}"
+APP_BUNDLE="dist/${APP_NAME}.app"
+
+# ── 1. Build ─────────────────────────────────────────────────────────────────
+echo "→ Building Neutralino app..."
+neu build
+
+# ── 2. Verify the arm64 binary exists ────────────────────────────────────────
+if [ ! -f "${BUILD_DIR}/${BINARY_NAME}" ]; then
+  echo "ERROR: Expected binary not found: ${BUILD_DIR}/${BINARY_NAME}"
+  echo "       Run 'neu update' first to download binaries."
+  exit 1
+fi
+
+# ── 3. Create .app bundle structure ──────────────────────────────────────────
+echo "→ Creating .app bundle..."
+rm -rf "${APP_BUNDLE}"
+mkdir -p "${APP_BUNDLE}/Contents/MacOS"
+mkdir -p "${APP_BUNDLE}/Contents/Resources"
+
+# ── 4. Copy binary ───────────────────────────────────────────────────────────
+cp "${BUILD_DIR}/${BINARY_NAME}" "${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
+chmod +x "${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
+
+# ── 5. Copy app resources ────────────────────────────────────────────────────
+cp "${BUILD_DIR}/resources.neu" "${APP_BUNDLE}/Contents/MacOS/resources.neu"
+
+# ── 6. Copy icon (convert PNG → icns if sips is available) ───────────────────
+ICON_PNG="resources/icons/app.png"
+ICNS_PATH="${APP_BUNDLE}/Contents/Resources/${APP_NAME}.icns"
+
+if command -v sips &>/dev/null && command -v iconutil &>/dev/null; then
+  echo "→ Generating .icns icon..."
+  ICONSET_DIR="/tmp/${APP_NAME}.iconset"
+  rm -rf "${ICONSET_DIR}"
+  mkdir -p "${ICONSET_DIR}"
+  for size in 16 32 64 128 256 512; do
+    sips -z ${size} ${size} "${ICON_PNG}" \
+      --out "${ICONSET_DIR}/icon_${size}x${size}.png" &>/dev/null
+    double=$((size * 2))
+    sips -z ${double} ${double} "${ICON_PNG}" \
+      --out "${ICONSET_DIR}/icon_${size}x${size}@2x.png" &>/dev/null
+  done
+  iconutil -c icns "${ICONSET_DIR}" -o "${ICNS_PATH}"
+  rm -rf "${ICONSET_DIR}"
+else
+  echo "→ sips/iconutil not found, copying PNG icon as fallback..."
+  cp "${ICON_PNG}" "${APP_BUNDLE}/Contents/Resources/${APP_NAME}.png"
+  ICNS_PATH="${APP_NAME}.png"
+fi
+
+# ── 7. Write Info.plist ───────────────────────────────────────────────────────
+echo "→ Writing Info.plist..."
+cat > "${APP_BUNDLE}/Contents/Info.plist" << PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key>
+  <string>Weather Dashboard</string>
+  <key>CFBundleDisplayName</key>
+  <string>Weather Dashboard</string>
+  <key>CFBundleIdentifier</key>
+  <string>${BUNDLE_ID}</string>
+  <key>CFBundleVersion</key>
+  <string>${VERSION}</string>
+  <key>CFBundleShortVersionString</key>
+  <string>${VERSION}</string>
+  <key>CFBundleExecutable</key>
+  <string>${APP_NAME}</string>
+  <key>CFBundleIconFile</key>
+  <string>$(basename "${ICNS_PATH}")</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleSignature</key>
+  <string>????</string>
+  <key>NSHighResolutionCapable</key>
+  <true/>
+  <key>LSMinimumSystemVersion</key>
+  <string>11.0</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>Used to show local weather conditions and centre the map.</string>
+</dict>
+</plist>
+PLIST
+
+# ── 8. Done ───────────────────────────────────────────────────────────────────
+echo ""
+echo "✓ Built: ${APP_BUNDLE}"
+echo ""
+echo "  To run:    open ${APP_BUNDLE}"
+echo "  To install: cp -R ${APP_BUNDLE} /Applications/"
+echo ""
+echo "Note: macOS may show a security warning on first launch."
+echo "To allow it: System Settings → Privacy & Security → Open Anyway"
