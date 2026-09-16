@@ -275,8 +275,8 @@ function renderPrecipBar(data) {
   const hours = 12;
   const BAR_W = 12;
   const GAP   = 2;
-  const H     = 30;   // bar area height
-  const LABEL_H = 14; // space below bars for labels
+  const H     = 22;   // bar area height
+  const LABEL_H = 12; // space below bars for labels
   const svgW  = hours * (BAR_W + GAP) - GAP;
 
   let bars = '';

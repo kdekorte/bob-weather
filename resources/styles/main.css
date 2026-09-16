@@ -114,7 +114,7 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 4px;
   padding: 6px 14px 4px;
   background: #f7f8fb;
@@ -270,9 +270,10 @@ html, body {
 #precip-bar {
   width: 100%;
   flex-shrink: 0;
+  margin-top: auto;
   display: flex;
   justify-content: center;
-  padding: 4px 0 4px;
+  padding: 2px 0 0;
   overflow: visible;
 }
 
