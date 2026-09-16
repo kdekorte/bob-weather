@@ -273,16 +273,28 @@
         refreshWeather();
       });
 
-      // Clear saved config — delete weather.config.json and revert to defaults
+      // Clear saved config — write an empty override file and reload from neutralino.config.json
       async function clearConfig() {
         if (typeof Neutralino === 'undefined') return;
+
+        // Write an empty override so any subsequent read finds nothing to merge
         try {
-          await Neutralino.filesystem.removeFile(_basePath + '/weather.config.json');
+          await Neutralino.filesystem.writeFile(
+            _basePath + '/weather.config.json',
+            JSON.stringify({})
+          );
+        } catch (_) { /* ignore */ }
+
+        // Re-read neutralino.config.json to restore the compiled weatherConfig
+        try {
+          const raw = await Neutralino.filesystem.readFile(_basePath + '/neutralino.config.json');
+          const wc = (JSON.parse(raw).weatherConfig) || {};
+          Object.assign(AppConfig, DEFAULT_CONFIG, wc);
         } catch (_) {
-          // File may not exist — that's fine
+          Object.assign(AppConfig, DEFAULT_CONFIG);
         }
-        // Revert live AppConfig to compiled defaults and re-resolve coordinates
-        Object.assign(AppConfig, DEFAULT_CONFIG);
+
+        // Re-resolve coordinates from the restored config
         await resolveCoordinates();
         _cachedLocation = null;
 
