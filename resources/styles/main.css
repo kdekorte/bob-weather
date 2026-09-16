@@ -273,68 +273,72 @@ html, body {
 }
 
 /* ============================================================
-   Forecast panel — right column (150px wide)
+   Forecast panel — right column, 2-line cards (130px wide)
    ============================================================ */
 #panel-forecast {
-  width: 150px;
+  width: 130px;
   height: 100vh;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: #e8eaf0;
+  background: #f0f2f5;
   border-left: 1px solid #c8cdd8;
   overflow: hidden;
-  padding: 6px 8px;
-  gap: 5px;
-  box-sizing: border-box;
 }
 
 #forecast-rows {
   display: flex;
   flex-direction: column;
   width: 100%;
-  flex: 1;
-  gap: 5px;
+  height: 100vh;
 }
 
-/* Each day: white card, centred stack */
 .fc-row {
-  flex: 1;
+  /* full viewport height, 4 dividers of 1px each, divided by 5 rows */
+  height: calc((100vh - 4px) / 5);
   min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  padding: 6px 4px;
-  background: #ffffff;
-  border-radius: 8px;
-  border: 1px solid #dde0e8;
-}
-
-/* Day abbreviation */
-.fc-day {
-  font-size: 11px;
-  font-weight: 700;
-  color: #6b7694;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-
-/* Weather icon — centred */
-.fc-row img {
-  width: 32px;
-  height: 32px;
+  gap: 2px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #dde0e8;
   flex-shrink: 0;
 }
 
-/* Hi / Lo on one line, centred */
-.fc-temps {
+.fc-row:last-child {
+  border-bottom: none;
+}
+
+/* Line 1: day name + icon side by side */
+.fc-line1 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.fc-day {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2c3550;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fc-row img {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+/* Line 2: hi / lo + precip */
+.fc-line2 {
   display: flex;
   flex-direction: row;
   align-items: baseline;
-  justify-content: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .fc-hi {
@@ -348,18 +352,17 @@ html, body {
   color: #6b7694;
 }
 
-/* Precipitation — own line, centred */
 .fc-precip {
   font-size: 11px;
   color: #3b82d4;
-  font-weight: 600;
+  margin-left: auto;
 }
 
 /* ============================================================
    Map panel — middle column (440px)
    ============================================================ */
 #panel-map {
-  width: 420px;
+  width: 440px;
   height: 100vh;
   flex-shrink: 0;
   position: relative;
@@ -367,7 +370,7 @@ html, body {
 }
 
 #map {
-  width: 420px;
+  width: 440px;
   height: 100vh;
 }
 
