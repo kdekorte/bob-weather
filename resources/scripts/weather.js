@@ -305,6 +305,15 @@ function initWeather() {
     }
   });
 
+  // Map double-click / home button → fetch weather for the new coordinates
+  document.addEventListener('locationPinned', (e) => {
+    const { lat, lon } = e.detail;
+    AppConfig.latitude  = lat;
+    AppConfig.longitude = lon;
+    _cachedLocation     = null;   // clear cache so reverse-geocode runs again
+    refreshWeather();
+  });
+
   refreshWeather();
   setInterval(refreshWeather, AppConfig.refreshIntervalSeconds * 1000);
   // Check for stale data every minute

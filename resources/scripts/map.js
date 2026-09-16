@@ -17,6 +17,8 @@ const RADAR_FADE_MS        = 400;  // cross-fade duration (CSS transition)
 
 let _map             = null;
 let _homeLatLng      = null;
+let _pinnedMarker    = null;   // marker at the double-clicked location
+let _homeMarker      = null;   // marker at the home location
 let _radarLayers     = [];   // Leaflet tile layers, one per frame
 let _radarTimestamps = [];   // unix timestamps matching each layer
 let _radarFrameIdx   = 0;
@@ -233,13 +235,13 @@ function initMap() {
 
   L.control.zoom({ position: 'topright' }).addTo(_map);
 
-  // Home button — recentres to default view
+  // Home button — resets pinned location and recentres to home
   const HomeControl = L.Control.extend({
     options: { position: 'topright' },
     onAdd() {
       const btn = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-home-btn');
-      btn.title = 'Reset to home view';
-      btn.innerHTML = `<a role="button" aria-label="Reset to home view" href="#">
+      btn.title = 'Reset to home location';
+      btn.innerHTML = `<a role="button" aria-label="Reset to home location" href="#">
         <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
           <path d="M8 1.5L1 7.5h2V14h4v-4h2v4h4V7.5h2L8 1.5z"/>
         </svg>
@@ -247,7 +249,7 @@ function initMap() {
       L.DomEvent.on(btn, 'click', (e) => {
         L.DomEvent.stopPropagation(e);
         L.DomEvent.preventDefault(e);
-        _map.setView(_homeLatLng, zoom, { animate: true });
+        resetToHome();
       });
       return btn;
     }
@@ -260,8 +262,8 @@ function initMap() {
     attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
   }).addTo(_map);
 
-  // Current location marker
-  L.circleMarker(_homeLatLng, {
+  // Home location marker (permanent, blue)
+  _homeMarker = L.circleMarker(_homeLatLng, {
     radius:      6,
     color:       '#3b82d4',
     fillColor:   '#3b82d4',
@@ -269,9 +271,10 @@ function initMap() {
     weight:      2,
   }).addTo(_map);
 
-  // Double-click resets view
-  _map.on('dblclick', () => {
-    _map.setView(_homeLatLng, zoom, { animate: true });
+  // Double-click on the map → pin that location, fetch weather for it
+  _map.on('dblclick', (e) => {
+    const { lat, lng } = e.latlng;
+    setPinnedLocation(lat, lng);
   });
 
   // Ensure Leaflet picks up the actual rendered size (100vh vs fixed px)
@@ -282,4 +285,45 @@ function initMap() {
 
   // Refresh radar every 5 minutes independent of weather refresh
   _radarRefreshTimer = setInterval(loadRadar, RADAR_REFRESH_MS);
+}
+
+// ── Pinned location helpers ───────────────────────────────────────────────────
+
+function setPinnedLocation(lat, lng) {
+  // Move or create the pinned marker (orange)
+  if (_pinnedMarker) {
+    _pinnedMarker.setLatLng([lat, lng]);
+  } else {
+    _pinnedMarker = L.circleMarker([lat, lng], {
+      radius:      6,
+      color:       '#d4790a',
+      fillColor:   '#d4790a',
+      fillOpacity: 1,
+      weight:      2,
+    }).addTo(_map);
+  }
+
+  // Centre the map on the new location
+  _map.setView([lat, lng], _map.getZoom(), { animate: true });
+
+  // Notify weather module
+  document.dispatchEvent(new CustomEvent('locationPinned', {
+    detail: { lat, lon: lng }
+  }));
+}
+
+function resetToHome() {
+  // Remove pinned marker
+  if (_pinnedMarker) {
+    _map.removeLayer(_pinnedMarker);
+    _pinnedMarker = null;
+  }
+
+  // Re-centre on home
+  _map.setView(_homeLatLng, DEFAULT_ZOOM, { animate: true });
+
+  // Notify weather module to restore home weather
+  document.dispatchEvent(new CustomEvent('locationPinned', {
+    detail: { lat: _homeLatLng[0], lon: _homeLatLng[1] }
+  }));
 }
