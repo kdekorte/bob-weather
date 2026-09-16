@@ -366,6 +366,24 @@ function setPinnedLocation(lat, lng) {
   }));
 }
 
+function setHomeLocation(lat, lng) {
+  _homeLatLng = [lat, lng];
+
+  // Move the permanent blue home marker
+  if (_homeMarker) {
+    _homeMarker.setLatLng(_homeLatLng);
+  }
+
+  // Remove any temporary pin — this location IS home now
+  if (_pinnedMarker) {
+    _map.removeLayer(_pinnedMarker);
+    _pinnedMarker = null;
+  }
+
+  // Centre map on the new home
+  _map.setView(_homeLatLng, DEFAULT_ZOOM, { animate: true });
+}
+
 function resetToHome() {
   // Remove pinned marker
   if (_pinnedMarker) {
