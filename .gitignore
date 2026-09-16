@@ -1,0 +1,19 @@
+# Environment / secrets
+.env
+.env.*
+*.env
+
+# Neutralino binaries (downloaded at build time)
+/bin/
+/dist/
+# OS artefacts
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+
+# Logs
+*.log
+neutralinojs.log

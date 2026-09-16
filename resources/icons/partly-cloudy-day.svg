@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Sun (partial) -->
+  <circle cx="22" cy="26" r="10" fill="#f5c842" />
+  <g stroke="#f5c842" stroke-width="2" stroke-linecap="round">
+    <line x1="22" y1="8"  x2="22" y2="13"/>
+    <line x1="8"  y1="22" x2="13" y2="22"/>
+    <line x1="10" y1="10" x2="14" y2="14"/>
+  </g>
+  <!-- Cloud -->
+  <ellipse cx="38" cy="36" rx="14" ry="9" fill="#b0bec5"/>
+  <circle  cx="28" cy="37" r="8"          fill="#b0bec5"/>
+  <circle  cx="44" cy="33" r="7"          fill="#b0bec5"/>
+</svg>

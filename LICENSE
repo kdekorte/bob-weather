@@ -1,0 +1,60 @@
+MIT License
+
+Copyright (c) 2026 bob-weather contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Third-Party Acknowledgements
+
+This project makes use of the following open-source software and services:
+
+### Neutralino.js
+- License: MIT
+- https://neutralino.js.org/
+
+### Leaflet
+- License: BSD 2-Clause
+- https://leafletjs.com/
+- Copyright (c) 2010-2024, Vladimir Agafonkin; Copyright (c) 2010-2011, CloudMade
+
+### Open-Meteo
+- License: CC BY 4.0 (non-commercial use free)
+- https://open-meteo.com/
+- Weather data provided free of charge under the Creative Commons Attribution 4.0 licence.
+  Attribution: Weather data by Open-Meteo.com
+
+### RainViewer
+- https://www.rainviewer.com/api.html
+- Radar data provided free of charge via the RainViewer public API.
+  Attribution: Radar © RainViewer
+
+### OpenStreetMap
+- License: ODbL 1.0
+- https://www.openstreetmap.org/copyright
+- Map data © OpenStreetMap contributors, licensed under the Open Database Licence.
+  Tile hosting by OpenStreetMap.org.
+
+### Nominatim (reverse geocoding)
+- License: ODbL 1.0
+- https://nominatim.openstreetmap.org/
+- Geocoding data © OpenStreetMap contributors.
+  Usage subject to the Nominatim Usage Policy:
+  https://operations.osmfoundation.org/policies/nominatim/

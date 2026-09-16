@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=800, initial-scale=1.0">
+  <title>Weather Dashboard</title>
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Left column: clock (top) + current conditions (bottom) -->
+    <div id="col-clock-weather">
+
+      <section id="panel-clock">
+        <div id="clock-time">
+          <span id="clock-hours">--</span><span class="clock-colon">:</span><span id="clock-minutes">--</span>
+        </div>
+        <div id="clock-seconds-ampm">
+          <span id="clock-ampm"></span>
+        </div>
+        <hr class="panel-divider">
+        <div id="clock-dayofweek"></div>
+        <div id="clock-date"></div>
+      </section>
+
+      <section id="panel-current">
+        <div id="weather-loading" class="loading-ring" aria-hidden="true"></div>
+        <div id="weather-location">--</div>
+
+        <div id="current-main">
+          <div id="weather-icon-wrap">
+            <img id="weather-icon" src="" alt="weather condition" width="72" height="72">
+          </div>
+          <div id="current-temp-block">
+            <div id="weather-temp-wrap">
+              <span id="weather-temp">--</span><span id="weather-unit" class="unit-toggle" title="Click to toggle units">°F</span>
+            </div>
+            <div id="weather-condition">--</div>
+            <div id="weather-feels-like">Feels like --</div>
+          </div>
+        </div>
+
+        <div id="current-details">
+          <div id="weather-wind">-- --</div>
+          <div id="weather-humidity">-- %</div>
+          <div id="weather-sun">
+            <span id="weather-sunrise">↑ --:--</span>
+            <span id="weather-sunset">↓ --:--</span>
+          </div>
+        </div>
+        <div id="weather-updated" class="stale-label"></div>
+      </section>
+
+    </div><!-- /col-clock-weather -->
+
+    <!-- Middle column: Map & Radar -->
+    <section id="panel-map" class="panel">
+      <div id="map"></div>
+      <div id="radar-timestamp"></div>
+    </section>
+
+    <!-- Right column: vertical 5-day forecast -->
+    <section id="panel-forecast">
+      <div id="forecast-rows"></div>
+    </section>
+
+  </div>
+
+  <!-- Vendor -->
+  <script src="vendor/neutralino.js"></script>
+  <script src="vendor/leaflet/leaflet.js"></script>
+
+  <!-- App scripts -->
+  <script src="scripts/config.js"></script>
+  <script src="scripts/clock.js"></script>
+  <script src="scripts/weather.js"></script>
+  <script src="scripts/map.js"></script>
+  <script>
+    (async () => {
+      if (typeof Neutralino !== 'undefined') {
+        Neutralino.init();
+
+        // Exit cleanly when the OS window close button is pressed
+        Neutralino.events.on('windowClose', () => {
+          Neutralino.app.exit();
+        });
+
+        // Set native menu bar with a Quit item
+        Neutralino.events.on('ready', async () => {
+          try {
+            await Neutralino.window.setMainMenu([
+              {
+                id: 'file',
+                text: 'File',
+                menuItems: [
+                  { id: 'quit', text: 'Quit', shortcut: 'Ctrl+Q' }
+                ]
+              }
+            ]);
+            Neutralino.events.on('menuItemClicked', (e) => {
+              if (e.detail.id === 'quit') {
+                Neutralino.app.exit();
+              }
+            });
+          } catch (_) {
+            // setMainMenu not supported on this platform — no-op
+          }
+        });
+      }
+      await initConfig();
+      initClock();
+      initWeather();
+      initMap();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{
+  "applicationId": "com.ibm.bob-weather",
+  "defaultMode": "window",
+  "port": 0,
+  "url": "/",
+  "documentRoot": "/resources/",
+  "enableServer": true,
+  "enableNativeAPI": true,
+  "tokenSecurity": "one-time",
+  "logging": {
+    "enabled": true,
+    "writeToLogFile": false
+  },
+  "nativeBlockList": [],
+  "globalVariables": {},
+  "modes": {
+    "window": {
+      "title": "Weather Dashboard",
+      "width": 800,
+      "height": 480,
+      "minWidth": 800,
+      "minHeight": 480,
+      "resizable": false,
+      "hidden": false,
+      "fullScreen": false,
+      "alwaysOnTop": false,
+      "icon": "/resources/icons/app.png",
+      "enableInspector": false,
+      "borderless": false,
+      "maximize": false,
+      "exitProcessOnClose": false,
+      "extendUserAgentWith": ""
+    }
+  },
+  "cli": {
+    "binaryName": "bob-weather",
+    "resourcesPath": "/resources/",
+    "extensionsPath": "/extensions/",
+    "clientLibrary": "/resources/vendor/neutralino.js",
+    "binaryVersion": "6.9.0",
+    "clientVersion": "6.9.0"
+  },
+  "weatherConfig": {
+    "latitude": 40.31313,
+    "longitude": -103.80387,
+    "useGeolocation": true,
+    "units": "imperial",
+    "timeFormat": "12h",
+    "refreshIntervalSeconds": 300,
+    "radarOpacity": 0.6,
+    "radarFrameCount": 2
+  }
+}

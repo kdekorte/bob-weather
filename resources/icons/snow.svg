@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Cloud -->
+  <ellipse cx="36" cy="26" rx="16" ry="10" fill="#78909c"/>
+  <circle  cx="24" cy="28" r="10"          fill="#78909c"/>
+  <circle  cx="44" cy="22" r="9"           fill="#78909c"/>
+  <!-- Snow flakes -->
+  <g fill="#e3f2fd">
+    <circle cx="24" cy="44" r="3"/>
+    <circle cx="32" cy="50" r="3"/>
+    <circle cx="40" cy="44" r="3"/>
+    <circle cx="32" cy="42" r="2"/>
+    <circle cx="20" cy="50" r="2"/>
+    <circle cx="44" cy="50" r="2"/>
+  </g>
+</svg>

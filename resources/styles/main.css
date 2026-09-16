@@ -1,0 +1,401 @@
+/* ============================================================
+   Base reset & root
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #f0f2f5;
+  color: #1a2030;
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ============================================================
+   Root layout — 3 columns
+   col-clock-weather (230px) | map (370px) | panel-forecast (200px)
+   ============================================================ */
+#app {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Left column: clock stacked above current conditions */
+#col-clock-weather {
+  width: 230px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-right: 1px solid #c8cdd8;
+}
+
+/* ============================================================
+   Clock panel — top half of left column
+   ============================================================ */
+#panel-clock {
+  flex: 0 0 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 12px 8px;
+  background: #ffffff;
+  border-bottom: 1px solid #c8cdd8;
+}
+
+#clock-time {
+  font-size: 68px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  color: #1a2030;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.clock-colon {
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+#clock-seconds-ampm {
+  display: flex;
+  align-items: baseline;
+  height: 24px;
+}
+
+#clock-ampm {
+  font-size: 18px;
+  font-weight: 600;
+  color: #6b7694;
+  letter-spacing: 1px;
+}
+
+.panel-divider {
+  width: 75%;
+  border: none;
+  border-top: 1px solid #dde0e8;
+  margin: 8px 0;
+}
+
+#clock-dayofweek {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3550;
+}
+
+#clock-date {
+  font-size: 13px;
+  color: #6b7694;
+  text-align: center;
+}
+
+/* ============================================================
+   Current conditions panel — bottom half of left column
+   ============================================================ */
+#panel-current {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 14px;
+  background: #f7f8fb;
+  position: relative;
+}
+
+/* Loading ring */
+.loading-ring {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.loading-ring.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #3b82d4, transparent);
+  animation: slide 1.2s linear infinite;
+}
+
+@keyframes slide {
+  from { left: -40%; }
+  to   { left: 110%; }
+}
+
+#weather-location {
+  font-size: 11px;
+  color: #6b7694;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  width: 100%;
+}
+
+/* Icon + temp side by side */
+#current-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  flex: 0 0 auto;
+}
+
+#weather-icon-wrap {
+  flex-shrink: 0;
+}
+
+#weather-icon {
+  width: 64px;
+  height: 64px;
+  display: block;
+}
+
+#current-temp-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+#weather-temp-wrap {
+  display: flex;
+  align-items: flex-start;
+  line-height: 1;
+}
+
+#weather-temp {
+  font-size: 48px;
+  font-weight: 700;
+  color: #1a2030;
+  line-height: 1;
+}
+
+.unit-toggle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3b82d4;
+  margin-top: 6px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.unit-toggle:hover {
+  background: #dbeafe;
+}
+
+#weather-condition {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3550;
+}
+
+#weather-feels-like {
+  font-size: 11px;
+  color: #6b7694;
+}
+
+/* Detail row: wind, humidity, sunrise/sunset */
+#current-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-top: 1px solid #dde0e8;
+  padding-top: 6px;
+  width: 100%;
+}
+
+#weather-wind {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3550;
+  display: flex;
+  align-items: center;
+}
+
+#weather-humidity {
+  font-size: 12px;
+  color: #4a5470;
+}
+
+#weather-sun {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: #4a5470;
+}
+
+#weather-sun span {
+  display: flex;
+  align-items: center;
+}
+
+#weather-updated {
+  font-size: 10px;
+  color: #c0392b;
+  min-height: 12px;
+  width: 100%;
+  text-align: center;
+}
+
+/* stale overlay */
+#panel-current.stale {
+  opacity: 0.6;
+}
+
+/* ============================================================
+   Forecast panel — right column, 2-line cards (130px wide)
+   ============================================================ */
+#panel-forecast {
+  width: 130px;
+  height: 100vh;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: #f0f2f5;
+  border-left: 1px solid #c8cdd8;
+  overflow: hidden;
+}
+
+#forecast-rows {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+.fc-row {
+  /* full viewport height, 4 dividers of 1px each, divided by 5 rows */
+  height: calc((100vh - 4px) / 5);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #dde0e8;
+  flex-shrink: 0;
+}
+
+.fc-row:last-child {
+  border-bottom: none;
+}
+
+/* Line 1: day name + icon side by side */
+.fc-line1 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.fc-day {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2c3550;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fc-row img {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+/* Line 2: hi / lo + precip */
+.fc-line2 {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.fc-hi {
+  font-size: 14px;
+  font-weight: 700;
+  color: #d4790a;
+}
+
+.fc-lo {
+  font-size: 12px;
+  color: #6b7694;
+}
+
+.fc-precip {
+  font-size: 11px;
+  color: #3b82d4;
+  margin-left: auto;
+}
+
+/* ============================================================
+   Map panel — middle column (440px)
+   ============================================================ */
+#panel-map {
+  width: 440px;
+  height: 100vh;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+#map {
+  width: 440px;
+  height: 100vh;
+}
+
+#radar-timestamp {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(255,255,255,0.82);
+  color: #2c3550;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 3px;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Compact Leaflet attribution */
+.leaflet-control-attribution {
+  font-size: 8px !important;
+  background: rgba(255,255,255,0.75) !important;
+  color: #666 !important;
+  padding: 1px 4px !important;
+}
+
+.leaflet-control-attribution a {
+  color: #3b82d4 !important;
+}
