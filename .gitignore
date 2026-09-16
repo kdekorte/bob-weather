@@ -17,3 +17,5 @@ Thumbs.db
 # Logs
 *.log
 neutralinojs.log
+.tmp/
+weather.config.json
