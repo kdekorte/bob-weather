@@ -134,13 +134,16 @@
                 ]
               }
             ]);
-            Neutralino.events.on('menuItemClicked', (e) => {
-              if (e.detail.id === 'quit') Neutralino.app.exit();
-              if (e.detail.id === 'set-location') openLocationModal();
-            });
           } catch (_) {
             // setMainMenu not supported on this platform — no-op
           }
+        });
+
+        // menuItemClicked fires at the top level — register outside 'ready'
+        Neutralino.events.on('menuItemClicked', (e) => {
+          const id = e.detail?.id ?? e.detail;
+          if (id === 'quit') Neutralino.app.exit();
+          if (id === 'set-location') openLocationModal();
         });
       }
       await initConfig();
