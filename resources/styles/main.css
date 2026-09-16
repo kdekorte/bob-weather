@@ -230,6 +230,7 @@ html, body {
   flex-direction: column;
   gap: 0;
   width: 100%;
+  margin-top: 6px;
   background: #eef0f5;
   border-radius: 8px;
   border: 1px solid #dde0e8;
@@ -242,7 +243,7 @@ html, body {
   gap: 5px;
   font-size: 12px;
   color: #2c3550;
-  padding: 4px 10px;
+  padding: 8px 12px;
 }
 
 #weather-wind {
@@ -258,7 +259,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   gap: 0;
-  padding: 4px 10px;
+  padding: 8px 12px;
   font-size: 11px;
   color: #4a5470;
 }
