@@ -395,8 +395,9 @@ html, body {
   z-index: 1000;
 }
 
-/* Home button — sits below the zoom control with a small gap */
-.leaflet-home-btn {
+/* Home / Play-Pause buttons — sit below the zoom control */
+.leaflet-home-btn,
+.leaflet-playpause-btn {
   margin-top: 6px !important;
 }
 

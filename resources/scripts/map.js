@@ -19,6 +19,7 @@ let _map             = null;
 let _homeLatLng      = null;
 let _pinnedMarker    = null;   // marker at the double-clicked location
 let _homeMarker      = null;   // marker at the home location
+let _radarPaused     = false;  // true when animation is manually paused
 let _radarLayers     = [];   // Leaflet tile layers, one per frame
 let _radarTimestamps = [];   // unix timestamps matching each layer
 let _radarFrameIdx   = 0;
@@ -144,9 +145,20 @@ function scheduleNextFrame() {
 
 function startRadarAnimation() {
   stopRadarAnimation();
-  if (_radarLayers.length < 2) return;
+  if (_radarPaused || _radarLayers.length < 2) return;
   scheduleNextFrame();
 }
+
+// ---- Play / Pause button icon helpers -----------------------------------
+
+const ICON_PAUSE = `<svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+  <rect x="2" y="1" width="4" height="14" rx="1"/>
+  <rect x="10" y="1" width="4" height="14" rx="1"/>
+</svg>`;
+
+const ICON_PLAY = `<svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+  <polygon points="3,1 14,8 3,15"/>
+</svg>`;
 
 // ---- Load / reload radar ------------------------------------------------
 
@@ -255,6 +267,48 @@ function initMap() {
     }
   });
   new HomeControl().addTo(_map);
+
+  // Play/Pause radar animation button
+  const PlayPauseControl = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd() {
+      const btn = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-playpause-btn');
+      btn.title = 'Pause radar animation';
+      btn.innerHTML = `<a role="button" aria-label="Pause radar animation" href="#" style="display:flex;align-items:center;justify-content:center;">${ICON_PAUSE}</a>`;
+      L.DomEvent.on(btn, 'click', (e) => {
+        L.DomEvent.stopPropagation(e);
+        L.DomEvent.preventDefault(e);
+        const anchor = btn.querySelector('a');
+        if (_radarPaused) {
+          // Resume
+          _radarPaused = false;
+          btn.title = 'Pause radar animation';
+          anchor.setAttribute('aria-label', 'Pause radar animation');
+          anchor.innerHTML = ICON_PAUSE;
+          startRadarAnimation();
+        } else {
+          // Pause — show the most recent frame
+          _radarPaused = true;
+          stopRadarAnimation();
+          btn.title = 'Resume radar animation';
+          anchor.setAttribute('aria-label', 'Resume radar animation');
+          anchor.innerHTML = ICON_PLAY;
+          // Snap to the last (most recent) frame
+          _radarLayers.forEach((l, i) => {
+            if (i === _radarLayers.length - 1) showLayer(l);
+            else hideLayer(l);
+          });
+          if (_radarTimestamps.length) {
+            _radarFrameIdx = _radarLayers.length - 1;
+            document.getElementById('radar-timestamp').textContent =
+              radarTimestampLabel(_radarTimestamps[_radarFrameIdx]);
+          }
+        }
+      });
+      return btn;
+    }
+  });
+  new PlayPauseControl().addTo(_map);
 
   // Base tile layer — OSM
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
