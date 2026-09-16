@@ -244,15 +244,13 @@ function renderForecast(data) {
     const row = document.createElement('div');
     row.className = 'fc-row';
     row.innerHTML = `
-      <div class="fc-line1">
-        <span class="fc-day">${day}</span>
-        <img src="icons/${info.icon}.svg" alt="${info.label}" width="28" height="28">
-      </div>
-      <div class="fc-line2">
+      <span class="fc-day">${day}</span>
+      <img src="icons/${info.icon}.svg" alt="${info.label}" width="32" height="32">
+      <div class="fc-temps">
         <span class="fc-hi">${hi}°</span>
         <span class="fc-lo">${lo}°</span>
-        <span class="fc-precip">💧${precip}%</span>
       </div>
+      <span class="fc-precip">💧${precip}%</span>
     `;
     container.appendChild(row);
   }
