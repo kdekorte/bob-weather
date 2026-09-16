@@ -2,22 +2,21 @@
 """
 Generate resources/icons/app.png — weather dashboard app icon.
 
-Follows macOS icon guidelines:
-  • 1024 × 1024 px master canvas
-  • Artwork confined to the central 832 × 832 px (96 px padding on every side)
-  • Flat square PNG — NO baked-in rounded corners; the system applies its own
-    squircle mask automatically
-  • Solid background fills the full 1024 × 1024 canvas
+Follows actual macOS icon conventions (verified from real .icns files):
+  • 1024 × 1024 px canvas  (icon_512x512@2x slot in the iconset)
+  • Rounded-rect background with transparency OUTSIDE the squircle shape
+  • Artwork fills the full canvas — no artificial padding/safe-zone inset
+  • macOS squircle corner radius ≈ 22.5% of canvas width → ~230 px at 1024
 
 Requires: pillow  (pip3 install pillow)
 """
 import math
 from PIL import Image, ImageDraw
 
-# ── Canvas & safe-zone constants ──────────────────────────────────────────────
-CANVAS  = 1024          # full master canvas size
-PAD     = 96            # transparent padding on each side
-INNER   = CANVAS - 2 * PAD   # 832 — artwork bounding box
+# ── Canvas constants ──────────────────────────────────────────────────────────
+CANVAS = 1024
+# macOS squircle corner radius is ~22.5% of the icon size
+CORNER = int(CANVAS * 0.225)   # ≈ 230 px
 
 # ── Colours ───────────────────────────────────────────────────────────────────
 BG    = (26,  42,  74,  255)   # #1a2a4a  dark navy
@@ -25,24 +24,24 @@ SUN   = (245, 200,  50, 255)   # golden yellow
 WHITE = (255, 255, 255, 255)
 RAIN  = (100, 180, 245, 255)   # sky blue
 
-# ── Base canvas — solid square, no rounding ───────────────────────────────────
-img  = Image.new('RGBA', (CANVAS, CANVAS), BG)
+# ── Base canvas — transparent, then paint the squircle background ─────────────
+img  = Image.new('RGBA', (CANVAS, CANVAS), (0, 0, 0, 0))
 draw = ImageDraw.Draw(img)
+draw.rounded_rectangle([(0, 0), (CANVAS-1, CANVAS-1)], radius=CORNER, fill=BG)
 
-# ── Helper: scale a 0–1 coordinate into the 832 inner box ────────────────────
+# ── Helper: scale a 0–1 fraction to an absolute pixel on the canvas ──────────
 def S(v):
-    """Map a 0–1 fraction to an absolute pixel within the inner artwork box."""
-    return PAD + v * INNER
+    return v * CANVAS
 
 # ── Sun (upper-right quadrant) ────────────────────────────────────────────────
-SX = S(0.63)   # ~624 px
-SY = S(0.25)   # ~304 px
-SR = INNER * 0.10   # ~83 px radius
+SX = S(0.63)
+SY = S(0.25)
+SR = CANVAS * 0.10   # ~103 px radius
 
 # Rays
-RAY_INNER = SR + INNER * 0.030
-RAY_OUTER = SR + INNER * 0.090
-RAY_W     = int(INNER * 0.018)
+RAY_INNER = SR + CANVAS * 0.030
+RAY_OUTER = SR + CANVAS * 0.090
+RAY_W     = int(CANVAS * 0.018)
 for deg in range(0, 360, 45):
     rad = math.radians(deg)
     x0 = SX + math.cos(rad) * RAY_INNER
@@ -59,8 +58,7 @@ cloud = Image.new('RGBA', (CANVAS, CANVAS), (0, 0, 0, 0))
 cc    = ImageDraw.Draw(cloud)
 
 def puff(fx, fy, fr):
-    """Draw one cloud circle; fx/fy/fr are 0–1 fractions of INNER."""
-    cx = S(fx); cy = S(fy); r = INNER * fr
+    cx = S(fx); cy = S(fy); r = CANVAS * fr
     cc.ellipse([(cx-r, cy-r), (cx+r, cy+r)], fill=WHITE)
 
 # Bottom row — four circles that form the rounded base
@@ -81,8 +79,8 @@ img = Image.alpha_composite(img, cloud)
 draw = ImageDraw.Draw(img)
 
 # ── Raindrops ─────────────────────────────────────────────────────────────────
-RW = int(INNER * 0.017)   # drop width  ~14 px
-RH = int(INNER * 0.026)   # drop height ~22 px
+RW = int(CANVAS * 0.017)   # drop width  ~17 px
+RH = int(CANVAS * 0.026)   # drop height ~27 px
 drop_fxs = [0.22, 0.34, 0.46, 0.58, 0.70]
 for i, fx in enumerate(drop_fxs):
     dx = S(fx)
