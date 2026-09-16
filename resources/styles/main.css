@@ -270,10 +270,9 @@ html, body {
 #precip-bar {
   width: 100%;
   flex-shrink: 0;
-  margin-top: auto;
   display: flex;
   justify-content: center;
-  padding: 2px 0 0;
+  padding: 6px 0 0;
   overflow: visible;
 }
 
