@@ -38,7 +38,9 @@ cp "${BUILD_DIR}/${BINARY_NAME}" "${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
 chmod +x "${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
 
 # ── 5. Copy app resources ────────────────────────────────────────────────────
-cp "${BUILD_DIR}/resources.neu" "${APP_BUNDLE}/Contents/MacOS/resources.neu"
+cp "${BUILD_DIR}/resources.neu"     "${APP_BUNDLE}/Contents/MacOS/resources.neu"
+# neutralino.config.json must live next to the binary so NL_PATH resolves it
+cp neutralino.config.json           "${APP_BUNDLE}/Contents/MacOS/neutralino.config.json"
 
 # ── 6. Copy icon (convert PNG → icns if sips is available) ───────────────────
 ICON_PNG="resources/icons/app.png"
