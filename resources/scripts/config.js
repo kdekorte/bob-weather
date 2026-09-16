@@ -23,6 +23,9 @@ const FALLBACK_LON = -94.5786;
 
 const AppConfig = { ...DEFAULT_CONFIG };
 
+// Set by resolveCoordinates: 'gps' | 'config' | 'fallback'
+AppConfig.locationSource = 'fallback';
+
 /**
  * Initialise config by reading neutralino.config.json.
  * Must be awaited before any other module starts.
@@ -56,8 +59,9 @@ async function resolveCoordinates() {
   if (AppConfig.useGeolocation && (!AppConfig.latitude || !AppConfig.longitude)) {
     try {
       const pos = await getGeolocation();
-      AppConfig.latitude = pos.coords.latitude;
-      AppConfig.longitude = pos.coords.longitude;
+      AppConfig.latitude      = pos.coords.latitude;
+      AppConfig.longitude     = pos.coords.longitude;
+      AppConfig.locationSource = 'gps';
       return;
     } catch (_) {
       // geolocation failed — fall through
@@ -65,12 +69,14 @@ async function resolveCoordinates() {
   }
 
   if (AppConfig.latitude && AppConfig.longitude) {
-    return; // already set from config
+    AppConfig.locationSource = 'config';
+    return;
   }
 
   // Final fallback
-  AppConfig.latitude = FALLBACK_LAT;
-  AppConfig.longitude = FALLBACK_LON;
+  AppConfig.latitude       = FALLBACK_LAT;
+  AppConfig.longitude      = FALLBACK_LON;
+  AppConfig.locationSource = 'fallback';
 }
 
 function getGeolocation() {
