@@ -228,13 +228,10 @@ html, body {
 #current-details {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 5px;
   width: 100%;
-  margin-top: 6px;
-  background: #eef0f5;
-  border-radius: 8px;
-  border: 1px solid #dde0e8;
-  overflow: hidden;
+  border-top: 1px solid #dde0e8;
+  padding-top: 8px;
 }
 
 #current-details > * {
@@ -244,7 +241,6 @@ html, body {
   gap: 5px;
   font-size: 12px;
   color: #2c3550;
-  padding: 8px 12px;
 }
 
 #weather-wind {
@@ -259,8 +255,6 @@ html, body {
 #weather-sun {
   display: flex;
   justify-content: space-between;
-  gap: 0;
-  padding: 8px 12px;
   font-size: 11px;
   color: #4a5470;
 }
