@@ -113,13 +113,22 @@ html, body {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 6px 14px 4px;
+  align-items: stretch;
+  padding: 0 14px 6px;
   background: #f7f8fb;
   position: relative;
   overflow: hidden;
+}
+
+/* Centring wrapper for all conditions content */
+#current-conditions {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding-top: 6px;
 }
 
 /* Loading ring */
@@ -272,7 +281,7 @@ html, body {
   flex-shrink: 0;
   display: flex;
   justify-content: center;
-  padding: 6px 0 0;
+  padding: 4px 0 0;
   overflow: visible;
 }
 

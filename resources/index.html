@@ -27,30 +27,32 @@
 
       <section id="panel-current">
         <div id="weather-loading" class="loading-ring" aria-hidden="true"></div>
-        <div id="weather-location">--</div>
+        <div id="current-conditions">
+          <div id="weather-location">--</div>
 
-        <div id="current-main">
-          <div id="weather-icon-wrap">
-            <img id="weather-icon" src="" alt="weather condition" width="72" height="72">
-          </div>
-          <div id="current-temp-block">
-            <div id="weather-temp-wrap">
-              <span id="weather-temp">--</span><span id="weather-unit" class="unit-toggle" title="Click to toggle units">°F</span>
+          <div id="current-main">
+            <div id="weather-icon-wrap">
+              <img id="weather-icon" src="" alt="weather condition" width="72" height="72">
             </div>
-            <div id="weather-condition">--</div>
-            <div id="weather-feels-like">Feels like --</div>
+            <div id="current-temp-block">
+              <div id="weather-temp-wrap">
+                <span id="weather-temp">--</span><span id="weather-unit" class="unit-toggle" title="Click to toggle units">°F</span>
+              </div>
+              <div id="weather-condition">--</div>
+              <div id="weather-feels-like">Feels like --</div>
+            </div>
           </div>
-        </div>
 
-        <div id="current-details">
-          <div id="weather-wind">-- --</div>
-          <div id="weather-humidity-uv">
-            <span id="weather-humidity">-- %</span>
-            <span id="weather-uv"></span>
-          </div>
-          <div id="weather-sun">
-            <span id="weather-sunrise">↑ --:--</span>
-            <span id="weather-sunset">↓ --:--</span>
+          <div id="current-details">
+            <div id="weather-wind">-- --</div>
+            <div id="weather-humidity-uv">
+              <span id="weather-humidity">-- %</span>
+              <span id="weather-uv"></span>
+            </div>
+            <div id="weather-sun">
+              <span id="weather-sunrise">↑ --:--</span>
+              <span id="weather-sunset">↓ --:--</span>
+            </div>
           </div>
         </div>
         <div id="precip-bar" aria-label="Hourly precipitation probability"></div>
