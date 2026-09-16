@@ -1,6 +1,10 @@
 /**
- * config.js — reads weatherConfig from neutralino.config.json
- * and exposes a single AppConfig object to all other scripts.
+ * config.js — reads weatherConfig from neutralino.config.json,
+ * then merges weather.config.json (user override) on top.
+ *
+ * Override file lives next to the binary (NL_PATH/weather.config.json).
+ * It is a plain JSON object with any subset of weatherConfig keys, e.g.:
+ *   { "latitude": 40.71, "longitude": -74.00, "useGeolocation": false }
  *
  * Falls back to safe defaults so the app works without
  * Neutralino (e.g. opened directly in a browser for dev).
@@ -26,24 +30,40 @@ const AppConfig = { ...DEFAULT_CONFIG };
 // Set by resolveCoordinates: 'gps' | 'config' | 'fallback'
 AppConfig.locationSource = 'fallback';
 
+// Base path resolved once at startup
+let _basePath = '.';
+
 /**
- * Initialise config by reading neutralino.config.json.
+ * Initialise config by reading neutralino.config.json then
+ * weather.config.json (user override), merging in order.
  * Must be awaited before any other module starts.
  */
 async function initConfig() {
+  if (typeof NL_PATH !== 'undefined') {
+    _basePath = NL_PATH;
+  }
+
   try {
     if (typeof Neutralino !== 'undefined') {
-      // NL_PATH is the directory containing the binary + resources.neu (works
-      // for both `neu run` from the project root and a built binary launched
-      // from any working directory).
-      const configPath = (typeof NL_PATH !== 'undefined' ? NL_PATH : '.') + '/neutralino.config.json';
-      const raw = await Neutralino.filesystem.readFile(configPath);
+      // 1. Read the app config (weatherConfig block)
+      const raw = await Neutralino.filesystem.readFile(_basePath + '/neutralino.config.json');
       const json = JSON.parse(raw);
       const wc = json.weatherConfig || {};
       Object.assign(AppConfig, DEFAULT_CONFIG, wc);
     }
   } catch (_) {
     // Not in Neutralino runtime or file unreadable — use defaults
+  }
+
+  try {
+    if (typeof Neutralino !== 'undefined') {
+      // 2. Merge user override file (may not exist — that's fine)
+      const raw = await Neutralino.filesystem.readFile(_basePath + '/weather.config.json');
+      const override = JSON.parse(raw);
+      Object.assign(AppConfig, override);
+    }
+  } catch (_) {
+    // No override file — use whatever neutralino.config.json provided
   }
 
   // Restore persisted unit preference
@@ -57,14 +77,40 @@ async function initConfig() {
 }
 
 /**
+ * Save a partial config object to weather.config.json.
+ * Merges with any existing override file content so unrelated
+ * keys are preserved.
+ */
+async function saveOverrideConfig(updates) {
+  if (typeof Neutralino === 'undefined') return;
+
+  let existing = {};
+  try {
+    const raw = await Neutralino.filesystem.readFile(_basePath + '/weather.config.json');
+    existing = JSON.parse(raw);
+  } catch (_) {
+    // File doesn't exist yet — start fresh
+  }
+
+  const merged = { ...existing, ...updates };
+  await Neutralino.filesystem.writeFile(
+    _basePath + '/weather.config.json',
+    JSON.stringify(merged, null, 2)
+  );
+
+  // Apply to live AppConfig immediately
+  Object.assign(AppConfig, updates);
+}
+
+/**
  * Resolve lat/lon via geolocation -> config -> fallback.
  */
 async function resolveCoordinates() {
   if (AppConfig.useGeolocation && (!AppConfig.latitude || !AppConfig.longitude)) {
     try {
       const pos = await getGeolocation();
-      AppConfig.latitude      = pos.coords.latitude;
-      AppConfig.longitude     = pos.coords.longitude;
+      AppConfig.latitude       = pos.coords.latitude;
+      AppConfig.longitude      = pos.coords.longitude;
       AppConfig.locationSource = 'gps';
       return;
     } catch (_) {
