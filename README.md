@@ -16,30 +16,43 @@ A fullscreen kiosk-style weather dashboard built with [Neutralino.js](https://ne
 
 ## Installation via Homebrew (macOS)
 
-The easiest way to install bob-weather on macOS is through the project's [Homebrew](https://brew.sh) tap:
+The easiest way to install bob-weather on macOS is through the project's [Homebrew](https://brew.sh) tap.
+
+Because the cask lives in the main project repo (not a dedicated `homebrew-*` repo), you need to pass the full URL when tapping:
 
 ```bash
-brew tap kdekorte/bob-weather
-brew install --cask bob-weather
+brew tap kdekorte/bob-weather https://github.com/kdekorte/bob-weather.git
+brew trust kdekorte/bob-weather
+brew install bob-weather
 ```
+
+> `brew trust` is required because the tap is not hosted in a `homebrew-*` named repository. It marks the tap as trusted so Homebrew will run its cask scripts.
 
 The cask installs `bob-weather.app` directly into `/Applications`.
 
-On first launch macOS Gatekeeper may block the app because it is not notarised. To allow it:
+### First-launch steps
 
-1. Try to open the app — macOS will block it
+**1. Gatekeeper security warning**
+
+Because the app is ad-hoc signed (not notarised with an Apple Developer certificate), macOS will block it on first open:
+
+1. Try to open the app — macOS will show a security warning
 2. Open **System Settings → Privacy & Security**
-3. Scroll to the bottom and click **Open Anyway**
+3. Scroll down and click **Open Anyway**
 
-Alternatively, from the terminal:
+Alternatively, clear the quarantine flag from the terminal:
 
 ```bash
 xattr -dr com.apple.quarantine /Applications/bob-weather.app
 ```
 
-> **Upgrading:** `brew upgrade --cask bob-weather`
+**2. Location permission**
+
+On first launch the app will request access to your location via **System Settings → Privacy & Security → Location Services**. Allow it so the weather and map centre on your actual position. If you decline, the app falls back to any coordinates saved in its config, or Kansas City, MO as a last resort.
+
+> **Upgrading:** `brew upgrade bob-weather`
 >
-> **Uninstalling:** `brew uninstall --cask bob-weather && brew untap kdekorte/bob-weather`
+> **Uninstalling:** `brew uninstall bob-weather && brew untap kdekorte/bob-weather`
 
 ---
 
@@ -280,9 +293,9 @@ All runtime configuration lives in `neutralino.config.json` under the `weatherCo
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| `useGeolocation` | bool | `true` | Use `navigator.geolocation` on startup |
-| `latitude` | number\|null | `null` | Fallback latitude if geolocation fails |
-| `longitude` | number\|null | `null` | Fallback longitude if geolocation fails |
+| `useGeolocation` | bool | `true` | Prefer GPS location over saved coordinates |
+| `latitude` | number\|null | `null` | Fallback latitude if geolocation fails or is disabled |
+| `longitude` | number\|null | `null` | Fallback longitude if geolocation fails or is disabled |
 | `units` | string | `"imperial"` | `"imperial"` (°F, mph) or `"metric"` (°C, kph) |
 | `timeFormat` | string | `"12h"` | `"12h"` or `"24h"` |
 | `refreshIntervalSeconds` | number | `300` | Weather and radar refresh interval |
@@ -334,6 +347,6 @@ bob-weather/
 
 ## Quitting the app
 
-- **Menu bar** → **File** → **Quit**
-- **Keyboard**: `Ctrl+Q`
+- **Keyboard**: `Cmd+Q`
+- **Menu bar** → **Weather Dashboard** → **Quit Weather Dashboard**
 - **Window close button** (title bar ×)
