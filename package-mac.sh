@@ -42,6 +42,13 @@ cp "${BUILD_DIR}/resources.neu"     "${APP_BUNDLE}/Contents/MacOS/resources.neu"
 # neutralino.config.json must live next to the binary so NL_PATH resolves it
 cp neutralino.config.json           "${APP_BUNDLE}/Contents/MacOS/neutralino.config.json"
 
+# ── 5b. Compile CoreLocation helper ──────────────────────────────────────────
+# This Swift helper calls CoreLocation directly (WKWebView does not expose
+# navigator.geolocation to apps signed without a developer certificate).
+echo "→ Compiling CoreLocation helper..."
+swiftc src/get-location.swift -o "${APP_BUNDLE}/Contents/MacOS/get-location"
+chmod +x "${APP_BUNDLE}/Contents/MacOS/get-location"
+
 # ── 6. Copy icon (convert PNG → icns if sips is available) ───────────────────
 ICON_PNG="resources/icons/app.png"
 ICNS_PATH="${APP_BUNDLE}/Contents/Resources/${APP_NAME}.icns"

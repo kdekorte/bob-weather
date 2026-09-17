@@ -131,7 +131,37 @@ async function resolveCoordinates() {
   AppConfig.locationSource = 'fallback';
 }
 
-function getGeolocation() {
+/**
+ * Get the device's current coordinates.
+ *
+ * When running inside Neutralino, we invoke the bundled get-location binary
+ * (a compiled Swift helper that calls CoreLocation directly) via
+ * Neutralino.os.execCommand. This bypasses WKWebView's broken geolocation
+ * pipeline and shows the app in macOS Location Services settings.
+ *
+ * Falls back to navigator.geolocation for plain-browser dev use.
+ */
+async function getGeolocation() {
+  if (typeof Neutralino !== 'undefined') {
+    const helperPath = _basePath + '/get-location';
+    try {
+      const result = await Neutralino.os.execCommand(`"${helperPath}"`, { background: false });
+      const output = (result.stdOut || '').trim();
+      const parts  = output.split(',');
+      if (parts.length === 2) {
+        const lat = parseFloat(parts[0]);
+        const lon = parseFloat(parts[1]);
+        if (!isNaN(lat) && !isNaN(lon)) {
+          return { coords: { latitude: lat, longitude: lon } };
+        }
+      }
+      throw new Error(result.stdErr || 'get-location returned unexpected output');
+    } catch (err) {
+      throw new Error('Native location helper failed: ' + err.message);
+    }
+  }
+
+  // Fallback: browser navigator.geolocation (dev/browser mode)
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
       reject(new Error('Geolocation not available'));
