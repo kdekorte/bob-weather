@@ -12,6 +12,35 @@ A fullscreen kiosk-style weather dashboard built with [Neutralino.js](https://ne
 
 ---
 
+## Installation via Homebrew (macOS)
+
+The easiest way to install bob-weather on macOS is through the project's [Homebrew](https://brew.sh) tap:
+
+```bash
+brew tap kdekorte/bob-weather
+brew install --cask bob-weather
+```
+
+The cask installs `bob-weather.app` directly into `/Applications`.
+
+On first launch macOS Gatekeeper may block the app because it is not notarised. To allow it:
+
+1. Try to open the app — macOS will block it
+2. Open **System Settings → Privacy & Security**
+3. Scroll to the bottom and click **Open Anyway**
+
+Alternatively, from the terminal:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/bob-weather.app
+```
+
+> **Upgrading:** `brew upgrade --cask bob-weather`
+>
+> **Uninstalling:** `brew uninstall --cask bob-weather && brew untap kdekorte/bob-weather`
+
+---
+
 ## Prerequisites
 
 | Requirement | Version |
@@ -107,8 +136,6 @@ Output is written to `dist/bob-weather/`:
 | File | Platform |
 |---|---|
 | `bob-weather-mac_arm64` | macOS Apple Silicon |
-| `bob-weather-mac_x64` | macOS Intel |
-| `bob-weather-mac_universal` | macOS universal binary |
 | `bob-weather-linux_x64` | Linux x64 |
 | `bob-weather-linux_arm64` | Linux ARM64 |
 | `bob-weather-linux_armhf` | Linux ARMhf (e.g. Raspberry Pi) |
@@ -127,6 +154,8 @@ bob-weather-win_x64.exe        # Windows
 ### Targeting a specific platform
 
 `neu build` always produces all platforms. To distribute only the binary for the current machine, copy just the matching binary and `resources.neu` from `dist/bob-weather/`.
+
+> **macOS note:** Only the `mac_arm64` binary is packaged for release and Homebrew distribution. The `mac_x64` and `mac_universal` binaries are built by `neu build` but not used.
 
 ---
 
@@ -192,6 +221,54 @@ Alternatively, from the terminal:
 ```bash
 xattr -dr com.apple.quarantine dist/bob-weather.app
 ```
+
+---
+
+## Creating a release
+
+Use [`release.sh`](release.sh) to tag, build, publish, and update the Homebrew formula in one go.
+
+### Prerequisites
+
+- `neu` (Neutralino CLI) — `npm install -g @neutralinojs/neu`
+- `gh` (GitHub CLI) — `brew install gh` then `gh auth login`
+- macOS with `sips` and `iconutil` (included with Xcode Command Line Tools)
+
+### Commands
+
+| Command | Description |
+|---|---|
+| `./release.sh` | Show current version and release status |
+| `./release.sh tag` | Create and push a git tag for the current version |
+| `./release.sh package` | Build the arm64 `.app` bundle and tarball |
+| `./release.sh release` | Create GitHub release and upload the tarball |
+| `./release.sh formula` | Update the Homebrew formula URL and SHA256 |
+| `./release.sh all` | Run all steps in sequence |
+
+### Typical release workflow
+
+```bash
+# 1. Bump the version
+#    Edit "appVersion" in neutralino.config.json, then commit
+vim neutralino.config.json
+git add neutralino.config.json
+git commit -m "Bump version to 1.1.0"
+
+# 2. Run the full release pipeline
+chmod +x release.sh   # first time only
+./release.sh all
+
+# 3. Commit the updated cask
+git add Casks/bob-weather.rb
+git commit -m "Update cask for 1.1.0"
+git push
+```
+
+`release.sh all` performs these steps automatically:
+1. Creates and pushes an annotated git tag (`v<version>`)
+2. Runs `neu build` and packages the arm64 `.app` bundle as a `.tar.gz` archive
+3. Creates the GitHub release and uploads the tarball
+4. Downloads the tarball, computes the SHA256, and rewrites `Casks/bob-weather.rb`
 
 ---
 
