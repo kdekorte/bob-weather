@@ -60,7 +60,7 @@ On first launch the app will request access to your location via **System Settin
 
 | Requirement | Version |
 |---|---|
-| [Node.js](https://nodejs.org/) | 18 or later |
+| [Node.js](https://nodejs.org/) | 20 or later |
 | [Neutralino CLI](https://neutralino.js.org/docs/cli/neu-cli) | Latest (`npm i -g @neutralinojs/neu`) |
 
 Install or update the CLI:
