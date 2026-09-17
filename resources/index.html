@@ -206,6 +206,15 @@
           if (id === 'set-location') openLocationModal();
           if (id === 'clear-config') clearConfig();
         });
+
+        // Cmd+Q / Ctrl+Q — Neutralino menu shortcuts are display-only,
+        // so we handle the keystroke ourselves.
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'q' && (e.metaKey || e.ctrlKey)) {
+            e.preventDefault();
+            Neutralino.app.exit();
+          }
+        });
       }
       await initConfig();
       initClock();
