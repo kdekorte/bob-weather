@@ -100,6 +100,11 @@ do_package() {
     _write_plist "${APP_BUNDLE}"
     _write_icns  "${APP_BUNDLE}"
 
+    info "Ad-hoc code-signing with location entitlement..."
+    codesign --force --deep --sign "-" \
+        --entitlements entitlements.plist \
+        "${APP_BUNDLE}"
+
     info "Creating ${ARM64_TARBALL}..."
     tar -czf "${ARM64_TARBALL}" -C dist "${APP_NAME}.app"
     success "Created ${ARM64_TARBALL}"

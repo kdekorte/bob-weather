@@ -106,7 +106,9 @@ async function saveOverrideConfig(updates) {
  * Resolve lat/lon via geolocation -> config -> fallback.
  */
 async function resolveCoordinates() {
-  if (AppConfig.useGeolocation && (!AppConfig.latitude || !AppConfig.longitude)) {
+  // GPS is tried first whenever useGeolocation is true, even if a config
+  // location is already saved — the toggle explicitly says "prefer GPS".
+  if (AppConfig.useGeolocation) {
     try {
       const pos = await getGeolocation();
       AppConfig.latitude       = pos.coords.latitude;
@@ -114,7 +116,7 @@ async function resolveCoordinates() {
       AppConfig.locationSource = 'gps';
       return;
     } catch (_) {
-      // geolocation failed — fall through
+      // geolocation denied or unavailable — fall through to config/fallback
     }
   }
 

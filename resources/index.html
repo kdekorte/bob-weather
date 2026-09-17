@@ -79,6 +79,20 @@
     <div style="background:#fff;border-radius:10px;padding:24px 28px;width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.25);font-family:-apple-system,'Segoe UI',system-ui,sans-serif;">
       <h3 style="margin:0 0 16px;font-size:15px;color:#1a2030;">Set Home Location</h3>
 
+      <!-- GPS toggle -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:10px 12px;background:#f7f8fa;border:1px solid #e5e7eb;border-radius:8px;">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#1a2030;">Prefer GPS Location</div>
+          <div style="font-size:11px;color:#6b7694;margin-top:1px;">Use device location when available</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;">
+          <input id="modal-use-gps" type="checkbox" style="opacity:0;width:0;height:0;position:absolute;">
+          <span id="modal-gps-track" style="position:absolute;inset:0;border-radius:20px;background:#c8cdd8;cursor:pointer;transition:background 0.2s;">
+            <span id="modal-gps-thumb" style="position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 0.2s;"></span>
+          </span>
+        </label>
+      </div>
+
       <!-- City lookup -->
       <div style="margin-bottom:16px;">
         <span style="display:block;font-size:11px;font-weight:600;color:#6b7694;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">City Lookup</span>
@@ -223,6 +237,15 @@
         latInput.value = AppConfig.latitude  ?? '';
         lonInput.value = AppConfig.longitude ?? '';
         errEl.style.display = 'none';
+
+        // Reflect current GPS toggle state
+        const gpsCheckbox = document.getElementById('modal-use-gps');
+        const gpsTrack    = document.getElementById('modal-gps-track');
+        const gpsThumb    = document.getElementById('modal-gps-thumb');
+        gpsCheckbox.checked = AppConfig.useGeolocation;
+        gpsTrack.style.background = AppConfig.useGeolocation ? '#3b82d4' : '#c8cdd8';
+        gpsThumb.style.transform  = AppConfig.useGeolocation ? 'translateX(16px)' : 'none';
+
         overlay.style.display = 'flex';
         latInput.focus();
       }
@@ -236,6 +259,13 @@
         if (e.target.closest('.location-icon')) {
           openLocationModal();
         }
+      });
+
+      // GPS toggle visual behaviour
+      document.getElementById('modal-use-gps').addEventListener('change', (e) => {
+        const on = e.target.checked;
+        document.getElementById('modal-gps-track').style.background = on ? '#3b82d4' : '#c8cdd8';
+        document.getElementById('modal-gps-thumb').style.transform  = on ? 'translateX(16px)' : 'none';
       });
 
       document.getElementById('modal-cancel').addEventListener('click', closeLocationModal);
@@ -302,9 +332,17 @@
 
         closeLocationModal();
 
+        const useGps = document.getElementById('modal-use-gps').checked;
+
         // Save to override file and apply live
-        await saveOverrideConfig({ latitude: lat, longitude: lon, useGeolocation: false });
-        AppConfig.locationSource = 'config';
+        await saveOverrideConfig({ latitude: lat, longitude: lon, useGeolocation: useGps });
+
+        if (useGps) {
+          // Re-run coordinate resolution so GPS is tried immediately
+          await resolveCoordinates();
+        } else {
+          AppConfig.locationSource = 'config';
+        }
 
         // Update the map's home location and recentre
         setHomeLocation(lat, lon);

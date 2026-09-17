@@ -102,7 +102,13 @@ cat > "${APP_BUNDLE}/Contents/Info.plist" << PLIST
 </plist>
 PLIST
 
-# ── 8. Done ───────────────────────────────────────────────────────────────────
+# ── 8. Ad-hoc code sign with location entitlement ────────────────────────────
+echo "→ Code-signing (ad-hoc) with location entitlement..."
+codesign --force --deep --sign "-" \
+  --entitlements entitlements.plist \
+  "${APP_BUNDLE}"
+
+# ── 9. Done ───────────────────────────────────────────────────────────────────
 echo ""
 echo "✓ Built: ${APP_BUNDLE}"
 echo ""
