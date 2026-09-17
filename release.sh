@@ -98,8 +98,14 @@ do_package() {
     cp neutralino.config.json         "${APP_BUNDLE}/Contents/MacOS/neutralino.config.json"
 
     info "Compiling CoreLocation helper..."
-    swiftc src/get-location.swift -o "${APP_BUNDLE}/Contents/MacOS/get-location"
+    swiftc src/get-location.swift -o "${APP_BUNDLE}/Contents/MacOS/get-location" \
+        -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __info_plist \
+        -Xlinker src/get-location-info.plist
     chmod +x "${APP_BUNDLE}/Contents/MacOS/get-location"
+    codesign --force --sign "-" \
+        --identifier "com.kdekorte.bob-weather.location-helper" \
+        --entitlements entitlements.plist \
+        "${APP_BUNDLE}/Contents/MacOS/get-location"
 
     _write_plist "${APP_BUNDLE}"
     _write_icns  "${APP_BUNDLE}"

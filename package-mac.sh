@@ -45,9 +45,18 @@ cp neutralino.config.json           "${APP_BUNDLE}/Contents/MacOS/neutralino.con
 # ── 5b. Compile CoreLocation helper ──────────────────────────────────────────
 # This Swift helper calls CoreLocation directly (WKWebView does not expose
 # navigator.geolocation to apps signed without a developer certificate).
+# The Info.plist is embedded so macOS TCC can match the bundle identifier
+# when deciding whether to grant location permission.
 echo "→ Compiling CoreLocation helper..."
-swiftc src/get-location.swift -o "${APP_BUNDLE}/Contents/MacOS/get-location"
+swiftc src/get-location.swift -o "${APP_BUNDLE}/Contents/MacOS/get-location" \
+  -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __info_plist \
+  -Xlinker src/get-location-info.plist
 chmod +x "${APP_BUNDLE}/Contents/MacOS/get-location"
+# Sign the helper explicitly so its identifier matches the embedded plist
+codesign --force --sign "-" \
+  --identifier "com.kdekorte.bob-weather.location-helper" \
+  --entitlements entitlements.plist \
+  "${APP_BUNDLE}/Contents/MacOS/get-location"
 
 # ── 6. Copy icon (convert PNG → icns if sips is available) ───────────────────
 ICON_PNG="resources/icons/app.png"
