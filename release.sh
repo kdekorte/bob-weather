@@ -216,10 +216,10 @@ do_formula() {
 
     info "arm64 SHA256: ${ARM64_SHA}"
 
-    # Update version and sha256 (cask puts sha256 before url)
+    # Update version and sha256; the cask url uses #{version} interpolation
+    # so only these two lines need changing between releases.
     sed -i '' "s|version \".*\"|version \"${VERSION}\"|" "${FORMULA}"
     sed -i '' "s|sha256 \".*\"|sha256 \"${ARM64_SHA}\"|" "${FORMULA}"
-    sed -i '' "s|url \"https://github.com/kdekorte/${APP_NAME}/releases/download/v[^/]*/bob-weather-macos-arm64-.*\.tar\.gz\"|url \"${ARM64_URL}\"|" "${FORMULA}"
 
     success "Formula updated: ${FORMULA}"
     echo ""
