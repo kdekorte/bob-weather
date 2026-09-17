@@ -10,7 +10,7 @@
 set -euo pipefail
 
 APP_NAME="bob-weather"
-BUNDLE_ID="com.ibm.bob-weather"
+BUNDLE_ID="com.kdekorte.bob-weather"
 VERSION="1.0.0"
 BINARY_NAME="${APP_NAME}-mac_arm64"
 BUILD_DIR="dist/${APP_NAME}"

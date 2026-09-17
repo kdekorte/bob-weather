@@ -1,5 +1,5 @@
 {
-  "applicationId": "com.ibm.bob-weather",
+  "applicationId": "com.kdekorte.bob-weather",
   "appVersion": "1.0.0",
   "defaultMode": "window",
   "port": 0,

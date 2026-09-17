@@ -121,7 +121,7 @@ _write_plist() {
   <key>CFBundleDisplayName</key>
   <string>Weather Dashboard</string>
   <key>CFBundleIdentifier</key>
-  <string>com.ibm.bob-weather</string>
+  <string>com.kdekorte.bob-weather</string>
   <key>CFBundleVersion</key>
   <string>${VERSION}</string>
   <key>CFBundleShortVersionString</key>

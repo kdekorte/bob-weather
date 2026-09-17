@@ -13,7 +13,7 @@ cask "bob-weather" do
 
   zap trash: [
     "~/Library/Application Support/bob-weather",
-    "~/Library/Preferences/com.ibm.bob-weather.plist",
-    "~/Library/Saved Application State/com.ibm.bob-weather.savedState",
+    "~/Library/Preferences/com.kdekorte.bob-weather.plist",
+    "~/Library/Saved Application State/com.kdekorte.bob-weather.savedState",
   ]
 end
