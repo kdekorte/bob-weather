@@ -2,6 +2,8 @@
 
 A fullscreen kiosk-style weather dashboard built with [Neutralino.js](https://neutralino.js.org/), designed for an **800×480** embedded or touchscreen display.
 
+![bob-weather screenshot](bob-weather.png)
+
 ## Features
 
 - **Live clock** — large HH:MM display with AM/PM indicator, day of week, and date
