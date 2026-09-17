@@ -147,7 +147,7 @@ function renderCurrent(data, locationName) {
 
   // Location source icon: satellite dish = GPS, pin = config, warning = fallback
   const srcIcons = {
-    gps: `<svg viewBox="0 0 14 14" width="13" height="13" style="display:inline-block;vertical-align:middle;margin-right:3px;" title="GPS location">
+    gps: `<svg class="location-icon" viewBox="0 0 14 14" width="13" height="13" style="display:inline-block;vertical-align:middle;margin-right:3px;cursor:pointer;" title="Click to set location">
       <circle cx="7" cy="7" r="2.5" fill="#2c8a3a"/>
       <circle cx="7" cy="7" r="5.5" fill="none" stroke="#2c8a3a" stroke-width="1.2"/>
       <line x1="7" y1="1" x2="7" y2="3" stroke="#2c8a3a" stroke-width="1.2" stroke-linecap="round"/>
@@ -155,12 +155,12 @@ function renderCurrent(data, locationName) {
       <line x1="1" y1="7" x2="3" y2="7" stroke="#2c8a3a" stroke-width="1.2" stroke-linecap="round"/>
       <line x1="11" y1="7" x2="13" y2="7" stroke="#2c8a3a" stroke-width="1.2" stroke-linecap="round"/>
     </svg>`,
-    config: `<svg viewBox="0 0 14 14" width="13" height="13" style="display:inline-block;vertical-align:middle;margin-right:3px;" title="Config location">
+    config: `<svg class="location-icon" viewBox="0 0 14 14" width="13" height="13" style="display:inline-block;vertical-align:middle;margin-right:3px;cursor:pointer;" title="Click to set location">
       <line x1="7" y1="1" x2="7" y2="9" stroke="#3b82d4" stroke-width="1.5" stroke-linecap="round"/>
       <polygon points="4,6 7,9 10,6" fill="#3b82d4"/>
       <ellipse cx="7" cy="11.5" rx="2.5" ry="1" fill="#3b82d4" opacity="0.4"/>
     </svg>`,
-    fallback: `<svg viewBox="0 0 14 14" width="13" height="13" style="display:inline-block;vertical-align:middle;margin-right:3px;" title="Default location">
+    fallback: `<svg class="location-icon" viewBox="0 0 14 14" width="13" height="13" style="display:inline-block;vertical-align:middle;margin-right:3px;cursor:pointer;" title="Click to set location">
       <circle cx="7" cy="5" r="2.5" fill="none" stroke="#d4790a" stroke-width="1.4"/>
       <line x1="7" y1="7.5" x2="7" y2="11" stroke="#d4790a" stroke-width="1.4" stroke-linecap="round"/>
       <circle cx="7" cy="12.5" r="0.8" fill="#d4790a"/>

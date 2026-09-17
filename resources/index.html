@@ -122,6 +122,22 @@
     </div>
   </div>
 
+  <!-- About modal -->
+  <div id="about-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9000;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:10px;padding:24px 28px;width:300px;box-shadow:0 8px 32px rgba(0,0,0,0.25);font-family:-apple-system,'Segoe UI',system-ui,sans-serif;text-align:center;">
+      <img src="icons/app.png" alt="Weather Dashboard" width="64" height="64" style="margin-bottom:12px;border-radius:12px;">
+      <h3 style="margin:0 0 4px;font-size:16px;color:#1a2030;font-weight:700;">Weather Dashboard</h3>
+      <div style="font-size:12px;color:#6b7694;margin-bottom:12px;">Version 1.0.0</div>
+      <p style="margin:0 0 16px;font-size:13px;color:#4a5568;line-height:1.4;">A kiosk-style weather dashboard built with Neutralinojs.</p>
+      <div style="display:flex;justify-content:center;">
+        <button id="about-modal-close"
+          style="padding:6px 20px;border:none;border-radius:6px;background:#3b82d4;font-size:13px;cursor:pointer;color:#fff;font-weight:600;">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Vendor -->
   <script src="vendor/neutralino.js"></script>
   <script src="vendor/leaflet/leaflet.js"></script>
@@ -146,18 +162,20 @@
           try {
             await Neutralino.window.setMainMenu([
               {
-                id: 'file',
-                text: 'File',
+                id: 'app',
+                text: 'Weather Dashboard',
                 menuItems: [
-                  { id: 'quit', text: 'Quit', shortcut: 'Ctrl+Q' }
-                ]
-              },
-              {
-                id: 'settings',
-                text: 'Settings',
-                menuItems: [
-                  { id: 'set-location', text: 'Set Location…' },
-                  { id: 'clear-config', text: 'Clear Saved Config…' }
+                  { id: 'about', text: 'About Weather Dashboard' },
+                  {
+                    id: 'settings-menu',
+                    text: 'Settings',
+                    menuItems: [
+                      { id: 'set-location', text: 'Set Location…', shortcut: 'CommandOrControl+,' },
+                      { id: 'clear-config', text: 'Clear Saved Config…' }
+                    ]
+                  },
+                  { text: '-' },
+                  { id: 'quit', text: 'Quit Weather Dashboard', shortcut: 'CommandOrControl+Q' }
                 ]
               }
             ]);
@@ -169,6 +187,7 @@
         // mainMenuItemClicked fires at the top level — register outside 'ready'
         Neutralino.events.on('mainMenuItemClicked', (e) => {
           const id = e.detail?.id ?? e.detail;
+          if (id === 'about') openAboutModal();
           if (id === 'quit') Neutralino.app.exit();
           if (id === 'set-location') openLocationModal();
           if (id === 'clear-config') clearConfig();
@@ -178,6 +197,20 @@
       initClock();
       initWeather();
       initMap();
+
+      // ── About modal ──────────────────────────────────────────────────────
+      function openAboutModal() {
+        document.getElementById('about-modal-overlay').style.display = 'flex';
+      }
+
+      function closeAboutModal() {
+        document.getElementById('about-modal-overlay').style.display = 'none';
+      }
+
+      document.getElementById('about-modal-close').addEventListener('click', closeAboutModal);
+      document.getElementById('about-modal-overlay').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('about-modal-overlay')) closeAboutModal();
+      });
 
       // ── Location modal ──────────────────────────────────────────────────
       function openLocationModal() {
@@ -197,6 +230,13 @@
       function closeLocationModal() {
         document.getElementById('modal-overlay').style.display = 'none';
       }
+
+      // Clicking location icon in current conditions opens Set Location dialog
+      document.getElementById('weather-location').addEventListener('click', (e) => {
+        if (e.target.closest('.location-icon')) {
+          openLocationModal();
+        }
+      });
 
       document.getElementById('modal-cancel').addEventListener('click', closeLocationModal);
 
