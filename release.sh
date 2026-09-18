@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# release.sh — Release management for bob-weather
+# release.sh — Release management for weather-dashboard
 #
 # Usage:
 #   ./release.sh              Show current version and status
@@ -16,8 +16,8 @@
 
 set -euo pipefail
 
-FORMULA="Casks/bob-weather.rb"
-APP_NAME="bob-weather"
+FORMULA="Casks/weather-dashboard.rb"
+APP_NAME="weather-dashboard"
 BUILD_DIR="dist/${APP_NAME}"
 APP_BUNDLE="dist/${APP_NAME}.app"
 
@@ -26,7 +26,7 @@ VERSION=$(grep '"appVersion"' neutralino.config.json | head -1 | sed 's/.*: *"\(
 TAG="v${VERSION}"
 
 ARM64_TARBALL="${APP_NAME}-macos-arm64-${VERSION}.tar.gz"
-ARM64_URL="https://github.com/kdekorte/${APP_NAME}/releases/download/${TAG}/${ARM64_TARBALL}"
+ARM64_URL="https://github.com/kdekorte/weather-dashboard/releases/download/${TAG}/${ARM64_TARBALL}"
 
 info()    { printf "\033[1;34m==>\033[0m \033[1m%s\033[0m\n" "$1"; }
 success() { printf "\033[1;32m==>\033[0m \033[1m%s\033[0m\n" "$1"; }
@@ -35,7 +35,7 @@ error()   { printf "\033[1;31mError:\033[0m %s\n" "$1" >&2; exit 1; }
 # ── status ─────────────────────────────────────────────────────────────────────
 
 show_status() {
-    info "bob-weather release status"
+    info "weather-dashboard release status"
     echo "  Version:       ${VERSION}"
     echo "  Tag:           ${TAG}"
     echo "  Formula:       ${FORMULA}"
@@ -103,7 +103,7 @@ do_package() {
         -Xlinker src/get-location-info.plist
     chmod +x "${APP_BUNDLE}/Contents/MacOS/get-location"
     codesign --force --sign "-" \
-        --identifier "com.kdekorte.bob-weather.location-helper" \
+        --identifier "com.kdekorte.weather-dashboard.location-helper" \
         --entitlements entitlements.plist \
         "${APP_BUNDLE}/Contents/MacOS/get-location"
 
@@ -136,7 +136,7 @@ _write_plist() {
   <key>CFBundleDisplayName</key>
   <string>Weather Dashboard</string>
   <key>CFBundleIdentifier</key>
-  <string>com.kdekorte.bob-weather</string>
+  <string>com.kdekorte.weather-dashboard</string>
   <key>CFBundleVersion</key>
   <string>${VERSION}</string>
   <key>CFBundleShortVersionString</key>
@@ -208,7 +208,7 @@ do_release() {
         info "Creating new GitHub release ${TAG}"
         gh release create "${TAG}" \
             "${ARM64_TARBALL}" \
-            --title "bob-weather ${VERSION}" \
+            --title "Weather Dashboard ${VERSION}" \
             --generate-notes
     fi
 

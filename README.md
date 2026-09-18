@@ -1,8 +1,8 @@
-# bob-weather
+# Weather Dashboard
 
 A fullscreen kiosk-style weather dashboard built with [Neutralino.js](https://neutralino.js.org/), designed for an **800×480** embedded or touchscreen display.
 
-![bob-weather screenshot](bob-weather.png)
+![Weather Dashboard screenshot](bob-weather.png)
 
 ## Features
 
@@ -16,19 +16,19 @@ A fullscreen kiosk-style weather dashboard built with [Neutralino.js](https://ne
 
 ## Installation via Homebrew (macOS)
 
-The easiest way to install bob-weather on macOS is through the project's [Homebrew](https://brew.sh) tap.
+The easiest way to install Weather Dashboard on macOS is through the project's [Homebrew](https://brew.sh) tap.
 
 Because the cask lives in the main project repo (not a dedicated `homebrew-*` repo), you need to pass the full URL when tapping:
 
 ```bash
-brew tap kdekorte/bob-weather https://github.com/kdekorte/bob-weather.git
-brew trust kdekorte/bob-weather
-brew install bob-weather
+brew tap kdekorte/weather-dashboard https://github.com/kdekorte/weather-dashboard.git
+brew trust kdekorte/weather-dashboard
+brew install weather-dashboard
 ```
 
 > `brew trust` is required because the tap is not hosted in a `homebrew-*` named repository. It marks the tap as trusted so Homebrew will run its cask scripts.
 
-The cask installs `bob-weather.app` directly into `/Applications`.
+The cask installs `weather-dashboard.app` directly into `/Applications`.
 
 ### First-launch steps
 
@@ -43,16 +43,16 @@ Because the app is ad-hoc signed (not notarised with an Apple Developer certific
 Alternatively, clear the quarantine flag from the terminal:
 
 ```bash
-xattr -dr com.apple.quarantine /Applications/bob-weather.app
+xattr -dr com.apple.quarantine /Applications/weather-dashboard.app
 ```
 
 **2. Location permission**
 
 On first launch the app will request access to your location via **System Settings → Privacy & Security → Location Services**. Allow it so the weather and map centre on your actual position. If you decline, the app falls back to any coordinates saved in its config, or Kansas City, MO as a last resort.
 
-> **Upgrading:** `brew upgrade bob-weather`
+> **Upgrading:** `brew upgrade weather-dashboard`
 >
-> **Uninstalling:** `brew uninstall bob-weather && brew untap kdekorte/bob-weather`
+> **Uninstalling:** `brew uninstall weather-dashboard && brew untap kdekorte/weather-dashboard`
 
 ---
 
@@ -76,8 +76,8 @@ npm install -g @neutralinojs/neu
 Clone the repo and download the Neutralino runtime binaries (first time only, or after a version change):
 
 ```bash
-git clone <repo-url> bob-weather
-cd bob-weather
+git clone <repo-url> weather-dashboard
+cd weather-dashboard
 neu update
 ```
 
@@ -146,29 +146,29 @@ Log output goes to `neutralinojs.log` in the project root (excluded from git).
 neu build
 ```
 
-Output is written to `dist/bob-weather/`:
+Output is written to `dist/weather-dashboard/`:
 
 | File | Platform |
 |---|---|
-| `bob-weather-mac_arm64` | macOS Apple Silicon |
-| `bob-weather-linux_x64` | Linux x64 |
-| `bob-weather-linux_arm64` | Linux ARM64 |
-| `bob-weather-linux_armhf` | Linux ARMhf (e.g. Raspberry Pi) |
-| `bob-weather-win_x64.exe` | Windows x64 |
+| `weather-dashboard-mac_arm64` | macOS Apple Silicon |
+| `weather-dashboard-linux_x64` | Linux x64 |
+| `weather-dashboard-linux_arm64` | Linux ARM64 |
+| `weather-dashboard-linux_armhf` | Linux ARMhf (e.g. Raspberry Pi) |
+| `weather-dashboard-win_x64.exe` | Windows x64 |
 | `resources.neu` | Bundled app resources (required alongside any binary) |
 
 To run a built binary, both the binary and `resources.neu` must be in the same directory:
 
 ```bash
-cd dist/bob-weather
-./bob-weather-mac_arm64        # macOS Apple Silicon
-./bob-weather-linux_x64        # Linux
-bob-weather-win_x64.exe        # Windows
+cd dist/weather-dashboard
+./weather-dashboard-mac_arm64        # macOS Apple Silicon
+./weather-dashboard-linux_x64        # Linux
+weather-dashboard-win_x64.exe        # Windows
 ```
 
 ### Targeting a specific platform
 
-`neu build` always produces all platforms. To distribute only the binary for the current machine, copy just the matching binary and `resources.neu` from `dist/bob-weather/`.
+`neu build` always produces all platforms. To distribute only the binary for the current machine, copy just the matching binary and `resources.neu` from `dist/weather-dashboard/`.
 
 > **macOS note:** Only the `mac_arm64` binary is packaged for release and Homebrew distribution. The `mac_x64` and `mac_universal` binaries are built by `neu build` but not used.
 
@@ -194,33 +194,36 @@ chmod +x package-mac.sh   # first time only
 ### What the script does
 
 1. Runs `neu build` to compile the app and bundle resources
-2. Creates a standard `.app` directory structure under `dist/bob-weather.app/`
+2. Creates a standard `.app` directory structure under `dist/weather-dashboard.app/`
 3. Copies the `mac_arm64` binary into `Contents/MacOS/`
 4. Copies `resources.neu` alongside the binary
-5. Generates a `.icns` icon from `resources/icons/app.png` using `sips` and `iconutil`
-6. Writes a complete `Info.plist` with bundle ID, version, display name, and location usage description
+5. Compiles `src/get-location.swift` into a CoreLocation helper binary
+6. Generates a `.icns` icon from `resources/icons/app.png` using `sips` and `iconutil`
+7. Writes a complete `Info.plist` with bundle ID, version, display name, and location usage description
+8. Ad-hoc code-signs the bundle with the location entitlement
 
 ### Output
 
 ```
-dist/bob-weather.app/
+dist/weather-dashboard.app/
 ├── Contents/
 │   ├── Info.plist
 │   ├── MacOS/
-│   │   ├── bob-weather          ← executable
+│   │   ├── weather-dashboard    ← executable
+│   │   ├── get-location         ← CoreLocation helper
 │   │   └── resources.neu
 │   └── Resources/
-│       └── bob-weather.icns
+│       └── weather-dashboard.icns
 ```
 
 ### Installing and running
 
 ```bash
 # Run directly from the project
-open dist/bob-weather.app
+open dist/weather-dashboard.app
 
 # Install to Applications
-cp -R dist/bob-weather.app /Applications/
+cp -R dist/weather-dashboard.app /Applications/
 ```
 
 ### Security warning on first launch
@@ -234,7 +237,7 @@ macOS Gatekeeper will block an unsigned app. To allow it:
 Alternatively, from the terminal:
 
 ```bash
-xattr -dr com.apple.quarantine dist/bob-weather.app
+xattr -dr com.apple.quarantine dist/weather-dashboard.app
 ```
 
 ---
@@ -274,7 +277,7 @@ chmod +x release.sh   # first time only
 ./release.sh all
 
 # 3. Commit the updated cask
-git add Casks/bob-weather.rb
+git add Casks/weather-dashboard.rb
 git commit -m "Update cask for 1.1.0"
 git push
 ```
@@ -283,7 +286,7 @@ git push
 1. Creates and pushes an annotated git tag (`v<version>`)
 2. Runs `neu build` and packages the arm64 `.app` bundle as a `.tar.gz` archive
 3. Creates the GitHub release and uploads the tarball
-4. Downloads the tarball, computes the SHA256, and rewrites `Casks/bob-weather.rb`
+4. Downloads the tarball, computes the SHA256, and rewrites `Casks/weather-dashboard.rb`
 
 ---
 
@@ -309,12 +312,14 @@ Changes to `neutralino.config.json` take effect on the next full app launch.
 ## Project structure
 
 ```
-bob-weather/
+weather-dashboard/
 ├── neutralino.config.json   # App config and weatherConfig
 ├── SPEC.md                  # Full feature specification
 ├── README.md
 ├── .gitignore
 ├── bin/                     # Runtime binaries (git-ignored, populated by neu update)
+├── src/                     # Native helper source
+│   └── get-location.swift   # CoreLocation helper (compiled during build)
 ├── dist/                    # Build output (git-ignored)
 └── resources/
     ├── index.html           # Root HTML — 3-column layout

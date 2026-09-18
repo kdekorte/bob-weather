@@ -4,9 +4,9 @@
 <plist version="1.0">
 <dict>
   <key>CFBundleIdentifier</key>
-  <string>com.kdekorte.bob-weather.location-helper</string>
+  <string>com.kdekorte.weather-dashboard.location-helper</string>
   <key>CFBundleName</key>
-  <string>bob-weather-location-helper</string>
+  <string>weather-dashboard-location-helper</string>
   <key>CFBundleExecutable</key>
   <string>get-location</string>
   <key>CFBundleVersion</key>

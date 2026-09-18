@@ -165,7 +165,7 @@ No frontend build tool (Webpack, Vite, etc.) is required. All assets are bundled
 ## File Structure
 
 ```
-bob-weather/
+weather-dashboard/
 ├── neutralino.config.json
 ├── SPEC.md
 ├── resources/

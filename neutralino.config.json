@@ -1,5 +1,5 @@
 {
-  "applicationId": "com.kdekorte.bob-weather",
+  "applicationId": "com.kdekorte.weather-dashboard",
   "appVersion": "1.0.1",
   "defaultMode": "window",
   "port": 0,
@@ -34,7 +34,7 @@
     }
   },
   "cli": {
-    "binaryName": "bob-weather",
+    "binaryName": "weather-dashboard",
     "resourcesPath": "/resources/",
     "extensionsPath": "/extensions/",
     "clientLibrary": "/resources/vendor/neutralino.js",

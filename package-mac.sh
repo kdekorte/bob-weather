@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# package-mac.sh — Build bob-weather as a macOS .app bundle (arm64)
+# package-mac.sh — Build weather-dashboard as a macOS .app bundle (arm64)
 #
 # Usage:
 #   chmod +x package-mac.sh
 #   ./package-mac.sh
 #
-# Output: dist/bob-weather.app  (drag to /Applications to install)
+# Output: dist/weather-dashboard.app  (drag to /Applications to install)
 
 set -euo pipefail
 
-APP_NAME="bob-weather"
-BUNDLE_ID="com.kdekorte.bob-weather"
+APP_NAME="weather-dashboard"
+BUNDLE_ID="com.kdekorte.weather-dashboard"
 VERSION="1.0.0"
 BINARY_NAME="${APP_NAME}-mac_arm64"
 BUILD_DIR="dist/${APP_NAME}"
@@ -54,7 +54,7 @@ swiftc src/get-location.swift -o "${APP_BUNDLE}/Contents/MacOS/get-location" \
 chmod +x "${APP_BUNDLE}/Contents/MacOS/get-location"
 # Sign the helper explicitly so its identifier matches the embedded plist
 codesign --force --sign "-" \
-  --identifier "com.kdekorte.bob-weather.location-helper" \
+  --identifier "com.kdekorte.weather-dashboard.location-helper" \
   --entitlements entitlements.plist \
   "${APP_BUNDLE}/Contents/MacOS/get-location"
 
