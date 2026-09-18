@@ -7,7 +7,7 @@ cask "bob-weather" do
   desc "Fullscreen kiosk-style weather dashboard built with Neutralino.js"
   homepage "https://github.com/kdekorte/bob-weather"
 
-  depends_on macos: ">= :big_sur"
+  depends_on macos: :big_sur
 
   app "bob-weather.app"
 
